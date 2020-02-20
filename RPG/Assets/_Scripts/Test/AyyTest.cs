@@ -8,6 +8,8 @@ public class AyyTest : MonoBehaviour
     void Start()
     {
         Debug.Log(AyyNative.TestAdd(5, 3));
+        int r = AyyNative.AyyLoadLua("aaa");
+        Debug.Log(r);
     }
 
     // Update is called once per frame

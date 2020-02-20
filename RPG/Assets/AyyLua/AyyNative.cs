@@ -11,4 +11,8 @@ public class AyyNative
 
     [DllImport(LIB_AYY_NATIVE)]
     public static extern int TestAdd(int a,int b);
+
+    [DllImport(LIB_AYY_NATIVE)]
+    public static extern int AyyLoadLua(string luaCode);
+
 }
