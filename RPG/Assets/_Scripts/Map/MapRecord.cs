@@ -22,24 +22,23 @@ namespace ayy
 
             for (int row = 0;row < _rows;row++)
             {
-                for (int col = 0;col < _cols;col++)
+                bool bEmptyAtZero = row % 2 == 1;
+                for (int col = 0; col < _cols; col++)
                 {
-                    GridRecord gridRecord = new GridRecord();
-                    gridRecord.gridType = GridType.Green;
-                    _gridRecords[row,col] = gridRecord;
+                    if (col == 0 && bEmptyAtZero)
+                    {
+                        _gridRecords[row, col] = null;
+                    }
+                    else
+                    {
+                        GridRecord gridRecord = new GridRecord();
+                        gridRecord.gridType = GridType.Green;
+                        _gridRecords[row, col] = gridRecord;
+                    }
                 }
             }
         }
 
-
-        public GridType GetGridTypeAt(int row,int col)
-        {
-            if (row >= 0 && row < _rows && col >= 0 && col < _cols)
-            {
-                return _gridRecords[row,col].gridType;
-            }
-            return GridType.Max;
-        }
 
         public GridRecord GetGridRecordAt(int row,int col)
         {
