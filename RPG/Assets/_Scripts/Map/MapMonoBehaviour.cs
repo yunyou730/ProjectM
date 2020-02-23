@@ -73,7 +73,7 @@ namespace ayy
                     if (gridRecord != null)
                     {
                         GridType gridType = gridRecord.gridType;
-                        Debug.Log("[" + row + "," + col + "]" + pos);
+                        //Debug.Log("[" + row + "," + col + "]" + pos);
 
                         GameObject prefab = _gridTypePrefabMap[gridType];
                         GameObject gridObject = GameObject.Instantiate(prefab, pos, Quaternion.identity);
