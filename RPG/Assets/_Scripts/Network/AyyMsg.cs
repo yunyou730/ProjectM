@@ -10,6 +10,20 @@ namespace ayy
         public const short InGameMsg = 1003;
     }
 
+
+    public enum MsgType
+    {
+        Lobby_CreateRoom = 1234,
+        Lobby_Join,
+        Lobby_Start,
+
+        Game_Player_Ready,
+        Game_Start,
+        Game_Player_Move,
+        Game_Player_Fire,
+    }
+
+
     public class CustomMessage : MessageBase
     {
         public int _uuid;
@@ -42,4 +56,6 @@ namespace ayy
             return uuid + vector + byteLen;
         }
     }
+
+    
 }
