@@ -35,7 +35,6 @@ namespace ayy
             CalcGridRadius();
             InitGridPrefabMap();
             LoadMapData();
-            CreateMap();
         }
 
         // Update is called once per frame
@@ -61,7 +60,7 @@ namespace ayy
         }
 
 
-        private void CreateMap()
+        public void CreateMap()
         {
             for (int row = 0;row < _mapRecord.GetRows();row++)
             {

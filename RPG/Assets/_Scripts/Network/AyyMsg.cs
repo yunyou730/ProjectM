@@ -11,16 +11,16 @@ namespace ayy
     }
 
 
-    public enum MsgType
+    public enum CustomMsgType
     {
         Lobby_CreateRoom = 1234,
-        Lobby_Join,
-        Lobby_Start,
+        Lobby_Server_Prepare,       // server 通知 client  开始加载游戏 
+        Lobby_Player_Ready,         // client 通知 server  加载完毕，可以开始游戏
 
-        Game_Player_Ready,
-        Game_Start,
-        Game_Player_Move,
-        Game_Player_Fire,
+        Game_Start,                 // server 通知 client  游戏正式开始，开启 LockStep 
+
+        Game_Player_Move,           // 玩家操作  client 通知 server，server 做广播 
+        Game_Player_Fire,           // 玩家操作  client 通知 server，server 做广播 
     }
 
 
@@ -57,5 +57,46 @@ namespace ayy
         }
     }
 
-    
+    public class LobbyMessage : MessageBase
+    {
+        public int messageId;
+        public string msgType;
+        public string content;
+
+
+        public override void Serialize(NetworkWriter writer)
+        {
+            writer.Write(messageId);
+            writer.Write(msgType);
+            writer.Write(content);
+        }
+
+        public override void Deserialize(NetworkReader reader)
+        {
+            messageId = reader.ReadInt32();
+            msgType = reader.ReadString();
+            content = reader.ReadString();
+        }
+    }
+
+    public class GameMessage : MessageBase
+    {
+        public int lockstepTurn;
+        public string msgType;
+        public string content;
+
+        public override void Serialize(NetworkWriter writer)
+        {
+            writer.Write(lockstepTurn);
+            writer.Write(msgType);
+            writer.Write(content);
+        }
+
+        public override void Deserialize(NetworkReader reader)
+        {
+            lockstepTurn = reader.ReadInt32();
+            msgType = reader.ReadString();
+            content = reader.ReadString();
+        }
+    }
 }

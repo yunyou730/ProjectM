@@ -24,6 +24,11 @@ public class MenuNetwork : MonoBehaviour
         _network.StartAsServer();
     }
 
+    public void OnClickServerStartGame()
+    {
+        _network.ServerStartGame();
+    }
+
     public void OnClickStartClient()
     {
         _network.StartAsClient();
