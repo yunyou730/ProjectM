@@ -10,6 +10,11 @@ namespace ayy
         MapMonoBehaviour    map = null;
         AyyNetwork          network = null;
 
+        public GameObject playerPrefab = null;
+        public Vector3[] spawnPoints = null;
+
+        Dictionary<int, GameObject> playerMap = new Dictionary<int, GameObject>();
+        
         private void Awake()
         {
             map = GameObject.Find("Map").GetComponent<MapMonoBehaviour>();
@@ -39,50 +44,34 @@ namespace ayy
 
         void OnGameTurnMessage(string turnJson)
         {
-            /*
-                string jsonStr = @"{
-                'name':'miao',
-                'gender':'male',
-                'age':31,
-                'girlfriend':'shenyizhi',
-                'array':[1,'bbb','432'],
-                'map':{
-                    'key1':true,
-                    'key2':2333
-                }
-            }";
-
-            JsonData jd = JsonMapper.ToObject(jsonStr);
-            JsonData array = jd["array"];
-        
-            for (int i = 0;i < array.Count;i++)
-            {
-                Debug.Log(array[i]);
-            }
-
-            JsonData map = jd["map"];
-            ICollection<string> keys = map.Keys;
-            foreach (var key in keys)
-            {
-                Debug.Log(map[key]);
-            }
-             */
             JsonData jd = JsonMapper.ToObject(turnJson);
-            ICollection<string> keys = jd.Keys;
-            foreach (var key in keys)
-            {                 
-                string clientId = (string)jd[key];
-                //string msgType = jd[key]["msg_type"];
-                //Debug.Log("msgType:" + msgType);
-                Debug.Log("clientId:" + clientId);
+            foreach (string strClientId in jd.Keys)
+            {
+                int clientId = int.Parse(strClientId);
+                string msgType = (string)jd[strClientId]["msg_type"];
+                string msgContent = (string)jd[strClientId]["msg_content"];
+                HandleGameplayMessage(clientId,msgType,msgContent);
             }
         }
-    }
 
-    public class GameplayEvent
-    {
-        public delegate void StartLoad();
-        public static event StartLoad StartLoadEvent;
+        private void HandleGameplayMessage(int clientId,string msgType,string msgContent)
+        {
+            JsonData jd = null;
+            switch (msgType)
+            {
+                case "game_spawn":
+                    jd = JsonMapper.ToObject(msgContent);
+                    int spawnPointIndex = (int)jd["spawn_point"];
+                    OnPlayerSpawn(clientId,spawnPointIndex);
+                    break;
+            }
+        }
+        
+        private void OnPlayerSpawn(int clientId,int spawnPosIndex)
+        {
+            Vector3 pos = spawnPoints[spawnPosIndex];
+            GameObject playerObject = GameObject.Instantiate(playerPrefab, pos, Quaternion.identity);
+            playerMap.Add(clientId,playerObject); 
+        }
     }
-
 }

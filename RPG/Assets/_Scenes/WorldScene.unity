@@ -614,7 +614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -1084,6 +1084,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b085c28caef621a48a863fb3aff525f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 3540695493265338851, guid: 8113f813e28b74937af6276c4a281fdf,
+    type: 3}
+  spawnPoints:
+  - {x: 0, y: 1, z: 0}
+  - {x: 5, y: 1, z: 0}
+  - {x: 1, y: 5, z: 0}
 --- !u!1 &1849340880
 GameObject:
   m_ObjectHideFlags: 0
