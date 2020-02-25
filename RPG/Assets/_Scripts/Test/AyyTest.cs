@@ -41,6 +41,44 @@ public class AyyTest : MonoBehaviour
         {
             Debug.Log(map[key]);
         }
+
+        JsonWriter jwriter = new JsonWriter();
+        
+
+        jwriter.WriteObjectStart();
+        {
+
+            jwriter.WritePropertyName("001");
+            {
+                jwriter.WriteObjectStart();
+
+                jwriter.WritePropertyName("name");
+                jwriter.Write("miao");
+                jwriter.WritePropertyName("age");
+                jwriter.Write(18);
+
+                jwriter.WriteObjectEnd();
+            }
+
+            jwriter.WritePropertyName("002");
+            {
+                jwriter.WriteObjectStart();
+
+                jwriter.WritePropertyName("name");
+                jwriter.Write("yun");
+                jwriter.WritePropertyName("age");
+                jwriter.Write(20);
+
+                jwriter.WriteObjectEnd();
+            }
+        }
+        jwriter.WriteObjectEnd();
+
+        string strJson = jwriter.ToString();
+        //JsonData jd2 = new JsonData();
+        //jd2.Add(3);
+        //string strJson = jd2.ToString();
+        Debug.Log(strJson);
     }
 
     // Update is called once per frame

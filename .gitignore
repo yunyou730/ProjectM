@@ -7,3 +7,7 @@ RPG_cp/Logs
 RPG_cp/Assembly-CSharp.csproj
 RPG_cp/RPG_cp.sln
 RPG/.vs/
+RPG/Library/
+RPG/obj/
+RPG/Temp/
+RPG_cp/.vs/

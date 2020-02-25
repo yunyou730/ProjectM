@@ -29,8 +29,7 @@ namespace ayy
             _client.RegisterHandler((int)CustomMsgType.Lobby_Server_Prepare, OnLobbyMsg);
             // gameplay
             _client.RegisterHandler((int)CustomMsgType.Game_Start, OnGameplayMsg);
-            _client.RegisterHandler((int)CustomMsgType.Game_Player_Move, OnGameplayMsg);
-            _client.RegisterHandler((int)CustomMsgType.Game_Player_Fire, OnGameplayMsg);
+            _client.RegisterHandler((int)CustomMsgType.Game_LockStep_Turn, OnGameplayMsg);
             // do start 
             _client.Connect("127.0.0.1", 20086);
         }

@@ -15,7 +15,7 @@ namespace ayy
             network = GameObject.Find("NetworkManager").GetComponent<AyyNetwork>();
 
 
-            network.StartGameEvent += OnStartLoadGame;
+            network.GamePrepareEvent += OnStartLoadGame;
         }
 
         void Start()

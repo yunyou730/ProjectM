@@ -30,6 +30,14 @@ namespace ayy
             
         }
 
+        private void FixedUpdate()
+        {
+            if (_server != null)
+            {
+                _server.FixedUpdate(Time.fixedDeltaTime);
+            }
+        }
+
         public void StartAsServer()
         {
             if (IsWorking) return;
@@ -61,42 +69,41 @@ namespace ayy
             _server.StartGame();
         }
 
+        // ---------- Send to Server --------------
         public void ClientReady()
         {
             _client.ClientReady();
         }
 
 
-        // ---------- Send to Server --------------
-        public void LoadGameDone()
-        {
-            
-        }
 
         // ---------- Gameplay Code -------------- 
-        public delegate void StartGame();
-        public event StartGame StartGameEvent;
+        public delegate void GamePrepare();
+        public event GamePrepare GamePrepareEvent;
+
+        public delegate void GameStart();
+        public event GameStart GameStartEvent;
 
         public void HandleMessage(LobbyMessage msg)
         {
+            Debug.Log("[HandleMessage(LobbyMessage)] " + msg.msgType);
             switch (msg.msgType)
             {
                 case "game_prepare":
-                    StartGameEvent?.Invoke();
-                    Debug.Log("[event]start_game");
+                    GamePrepareEvent?.Invoke();
                     break;
             }
         }
 
         public void HandleMessage(GameMessage msg)
         {
-            //switch (msg.msgType)
-            //{
-            //    case "start_game":
-            //        StartGameEvent?.Invoke();
-            //        Debug.Log("[event]start_game");
-            //        break;
-            //}
+            Debug.Log("[HandleMessage(GameMessage)] " + msg.msgType);
+            switch (msg.msgType)
+            {
+                case "start_game":
+                    GameStartEvent?.Invoke();
+                    break;
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using LitJson;
 
 namespace ayy
 {
@@ -12,6 +13,42 @@ namespace ayy
         public NetworkConnection conn = null;
     }
 
+    public class LockStepTurn
+    {
+        public int turnIndex = 0;
+        public float startTime = 0;
+        public float period = 0;
+        public float shouldKeepPeriod = 0;
+        public Dictionary<int, GameMessage> messageMap = new Dictionary<int, GameMessage>();
+
+
+        public bool CheckCollection(int mapSize)
+        {
+            return messageMap.Count >= mapSize ;
+        }
+
+        public void OnMessage(NetworkMessage msg)
+        {
+            NetworkConnection conn = msg.conn;
+            int connId = conn.connectionId;
+            if (!messageMap.ContainsKey(connId))
+            {
+                GameMessage gameMsg = new GameMessage();
+                gameMsg.Deserialize(msg.reader);
+                messageMap.Add(connId,gameMsg);
+            }
+        }
+
+        public void TimeElapse(float deltaTime)
+        {
+            period += deltaTime;
+        }
+        public bool CheckPeriod()
+        {
+            return period >= shouldKeepPeriod;
+        }
+    }
+
     public class AyyServer
     {
         AyyNetwork _context = null;
@@ -19,7 +56,17 @@ namespace ayy
 
         int _readyCount = 0;
         int _lobbyMsgCounter = 0;
-        int _lockstepTurnIndex = 0;
+
+        int _lockstepTurnIndexCounter = 0;
+
+        float MAX_TURN_PERIOD = 0;
+        LockStepTurn _currentTurn = null;
+
+        
+        // 用于记录时间 
+        float _timeCounter = 0; 
+
+        
 
         public AyyServer(AyyNetwork context)
         {
@@ -34,6 +81,8 @@ namespace ayy
             NetworkServer.RegisterHandler(CustomMsgTypes.InGameMsg, OnInGameMsg);
 
             NetworkServer.RegisterHandler((short)CustomMsgType.Lobby_Player_Ready,OnPlayerReady);
+            NetworkServer.RegisterHandler((short)CustomMsgType.Game_Client_Ctrl, OnPlayerCtrl);
+            
 
             bool success = NetworkServer.Listen(20086);
             if (success)
@@ -44,13 +93,37 @@ namespace ayy
             {
                 Debug.Log("Server start failed.");
             }
-            Debug.Log("Fix Update dt:" + Time.fixedDeltaTime);
+            
+            MAX_TURN_PERIOD = 1.0f / Time.fixedDeltaTime;
+
+            _readyCount = 0;
+            _lobbyMsgCounter = 0;
+            _timeCounter = 0;
             return success;
         }
 
         public void Close()
         {
 
+        }
+
+        public void FixedUpdate(float deltaTime)
+        {
+            _timeCounter += deltaTime;
+            if (_currentTurn == null)
+            {
+                return;
+            }
+            _currentTurn.TimeElapse(deltaTime);
+
+            if (_currentTurn.CheckPeriod())
+            {
+                if (_currentTurn.CheckCollection(_clientMap.Count))
+                {
+                    BroadCastTurn();
+                    NextTurn();
+                }
+            }
         }
 
         public void StartGame()
@@ -127,17 +200,64 @@ namespace ayy
             }
         }
 
+        private void OnPlayerCtrl(NetworkMessage netMsg)
+        {
+            int connId = netMsg.conn.connectionId;
+            if (_clientMap.ContainsKey(connId))
+            { 
+                
+            }
+        }
+
         private void HandleAllReady()
         {
-            LobbyMessage msg = new LobbyMessage();
-            msg.messageId = ++_lobbyMsgCounter;
-            msg.msgType = "game_started";
-            msg.content = "game_started";
-            foreach (int connId in _clientMap.Keys)
+            _lockstepTurnIndexCounter = 0;
+            NextTurn();
+        }
+
+
+        private void NextTurn()
+        {
+            _lockstepTurnIndexCounter++;
+            
+            LockStepTurn turn = new LockStepTurn();
+            turn.turnIndex = _lockstepTurnIndexCounter;
+            turn.startTime = _timeCounter;
+            turn.shouldKeepPeriod = MAX_TURN_PERIOD;
+            turn.period = 0;
+
+            _currentTurn = turn;
+        }
+
+        private void BroadCastTurn()
+        {
+            GameMessage sendMsg = new GameMessage();
+            sendMsg.lockstepTurn = _currentTurn.turnIndex;
+            sendMsg.msgType = "game_turn";
+
+            JsonWriter writer = new JsonWriter();
+            writer.WriteObjectStart();
+            foreach (int connId in _currentTurn.messageMap.Keys)
             {
-                ClientRecord clientRecord = _clientMap[connId];
-                clientRecord.conn.Send((int)CustomMsgType.Game_Start, msg);
+                GameMessage gameMsg = _currentTurn.messageMap[connId];
+
+                writer.WritePropertyName(connId.ToString());
+                writer.WriteObjectStart();
+
+                writer.WritePropertyName("conn_id");
+                writer.Write(connId);
+
+                writer.WritePropertyName("msg_type");
+                writer.Write(gameMsg.msgType);
+                
+                writer.WritePropertyName("msg_content");
+                writer.Write(gameMsg.content);
+
+                writer.WriteObjectEnd();
             }
+            writer.WriteObjectEnd();
+            sendMsg.content = writer.ToString();
+            Debug.Log("send msg content:" + sendMsg.content);
         }
     }
 }
