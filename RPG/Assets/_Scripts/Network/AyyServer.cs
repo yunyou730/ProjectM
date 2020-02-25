@@ -39,6 +39,14 @@ namespace ayy
             }
         }
 
+        public void AddMessage(int connId,GameMessage msg)
+        {
+            if (!messageMap.ContainsKey(connId))
+            {
+                messageMap.Add(connId, msg);
+            }
+        }
+
         public void TimeElapse(float deltaTime)
         {
             period += deltaTime;
@@ -94,7 +102,7 @@ namespace ayy
                 Debug.Log("Server start failed.");
             }
             
-            MAX_TURN_PERIOD = 1.0f / Time.fixedDeltaTime;
+            MAX_TURN_PERIOD = Time.fixedDeltaTime;
 
             _readyCount = 0;
             _lobbyMsgCounter = 0;
@@ -213,6 +221,7 @@ namespace ayy
         {
             _lockstepTurnIndexCounter = 0;
             NextTurn();
+            FillSpawnMessageInitialTurn();
         }
 
 
@@ -229,8 +238,35 @@ namespace ayy
             _currentTurn = turn;
         }
 
+        private void FillSpawnMessageInitialTurn()
+        {
+            int index = 0;
+            foreach (int connId in _clientMap.Keys)
+            {
+                ClientRecord clientRecord = _clientMap[connId];
+                    
+                GameMessage gameMsg = new GameMessage();
+                gameMsg.lockstepTurn = _currentTurn.turnIndex;
+                gameMsg.msgType = "game_spawn";
+
+                JsonWriter writer = new JsonWriter();
+                writer.WriteObjectStart();
+                writer.WritePropertyName("spawn_point");
+                writer.Write(index);
+                writer.WriteObjectEnd();
+
+                gameMsg.content = writer.ToString();
+                //Debug.Log("send msg content:" + gameMsg.content);
+
+                _currentTurn.AddMessage(connId,gameMsg);
+
+                index++;
+            }
+        }
+
         private void BroadCastTurn()
         {
+            // Build message content
             GameMessage sendMsg = new GameMessage();
             sendMsg.lockstepTurn = _currentTurn.turnIndex;
             sendMsg.msgType = "game_turn";
@@ -243,10 +279,10 @@ namespace ayy
 
                 writer.WritePropertyName(connId.ToString());
                 writer.WriteObjectStart();
-
+                /*
                 writer.WritePropertyName("conn_id");
                 writer.Write(connId);
-
+                */
                 writer.WritePropertyName("msg_type");
                 writer.Write(gameMsg.msgType);
                 
@@ -258,6 +294,13 @@ namespace ayy
             writer.WriteObjectEnd();
             sendMsg.content = writer.ToString();
             Debug.Log("send msg content:" + sendMsg.content);
+
+            // Send message to each client
+            foreach (int connId in _clientMap.Keys)
+            {
+                ClientRecord clientRecord = _clientMap[connId];
+                clientRecord.conn.Send((int)CustomMsgType.Game_LockStep_Turn, sendMsg);
+            }
         }
     }
 }

@@ -84,6 +84,9 @@ namespace ayy
         public delegate void GameStart();
         public event GameStart GameStartEvent;
 
+        public delegate void GameTurn(string json);
+        public event GameTurn GameTurnEvent;
+
         public void HandleMessage(LobbyMessage msg)
         {
             Debug.Log("[HandleMessage(LobbyMessage)] " + msg.msgType);
@@ -102,6 +105,10 @@ namespace ayy
             {
                 case "start_game":
                     GameStartEvent?.Invoke();
+                    break;
+                case "game_turn":
+                    int turnIndex = msg.lockstepTurn;
+                    GameTurnEvent?.Invoke(msg.content);
                     break;
             }
         }

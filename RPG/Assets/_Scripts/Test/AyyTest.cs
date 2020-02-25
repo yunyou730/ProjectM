@@ -53,7 +53,7 @@ public class AyyTest : MonoBehaviour
                 jwriter.WriteObjectStart();
 
                 jwriter.WritePropertyName("name");
-                jwriter.Write("miao");
+                jwriter.Write("myl");
                 jwriter.WritePropertyName("age");
                 jwriter.Write(18);
 
@@ -65,7 +65,7 @@ public class AyyTest : MonoBehaviour
                 jwriter.WriteObjectStart();
 
                 jwriter.WritePropertyName("name");
-                jwriter.Write("yun");
+                jwriter.Write("syz");
                 jwriter.WritePropertyName("age");
                 jwriter.Write(20);
 
