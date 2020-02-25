@@ -13,6 +13,8 @@ namespace ayy
 
         NetworkConnection _conn = null;
 
+        public int turnIndex { get; set; } = 0;
+
         public AyyClient(AyyNetwork context)
         {
             _context = context;
@@ -72,6 +74,30 @@ namespace ayy
             msg.msgType = "client_ready";
             msg.content = "client_ready";
             _conn.Send((int)CustomMsgType.Lobby_Player_Ready,msg);
+        }
+
+        public void ClientCtrlMove(MoveDir moveDir)
+        {
+            GameMessage msg = new GameMessage();
+            msg.msgType = "client_ctrl_move";
+            string content = "";
+            switch (moveDir)
+            {
+                case MoveDir.Up:
+                    content = "up";
+                    break;
+                case MoveDir.Down:
+                    content = "down";
+                    break;
+                case MoveDir.Left:
+                    content = "left";
+                    break;
+                case MoveDir.Right:
+                    content = "right";
+                    break;
+            }
+            msg.content = content;
+            _conn.Send((int)CustomMsgType.Game_Client_Ctrl,msg);
         }
 
         private void OnLobbyMsg(NetworkMessage netMsg)

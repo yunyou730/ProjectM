@@ -10,6 +10,14 @@ namespace ayy
         Playing,
     }
 
+    public enum MoveDir
+    {
+        Up,
+        Down,
+        Left,
+        Right,
+    }
+
     public class AyyNetwork : MonoBehaviour
     {
         public AyyServer _server = null;
@@ -75,6 +83,11 @@ namespace ayy
             _client.ClientReady();
         }
 
+        public void ClientCtrlMove(MoveDir moveDir)
+        {
+            _client.ClientCtrlMove(moveDir);
+        }
+
 
 
         // ---------- Gameplay Code -------------- 
@@ -84,7 +97,7 @@ namespace ayy
         public delegate void GameStart();
         public event GameStart GameStartEvent;
 
-        public delegate void GameTurn(string json);
+        public delegate void GameTurn(int turnIndex,string json);
         public event GameTurn GameTurnEvent;
 
         public void HandleMessage(LobbyMessage msg)
@@ -107,8 +120,8 @@ namespace ayy
                     GameStartEvent?.Invoke();
                     break;
                 case "game_turn":
-                    int turnIndex = msg.lockstepTurn;
-                    GameTurnEvent?.Invoke(msg.content);
+                    _client.turnIndex = msg.lockstepTurn;
+                    GameTurnEvent?.Invoke(msg.lockstepTurn,msg.content);
                     break;
             }
         }

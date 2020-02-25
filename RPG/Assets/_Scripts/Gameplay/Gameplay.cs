@@ -14,6 +14,9 @@ namespace ayy
         public Vector3[] spawnPoints = null;
 
         Dictionary<int, GameObject> playerMap = new Dictionary<int, GameObject>();
+
+
+        bool bHasSendCtrlThisTurn = false;
         
         private void Awake()
         {
@@ -28,11 +31,32 @@ namespace ayy
         {
 
         }
-
-        // Update is called once per frame
+        
         void Update()
         {
-
+            if (!bHasSendCtrlThisTurn)
+            {
+                if (Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    network.ClientCtrlMove(MoveDir.Up);
+                    bHasSendCtrlThisTurn = true;
+                }
+                else if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    network.ClientCtrlMove(MoveDir.Down);
+                    bHasSendCtrlThisTurn = true;
+                }
+                else if (Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    network.ClientCtrlMove(MoveDir.Left);
+                    bHasSendCtrlThisTurn = true;
+                }
+                else if (Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    network.ClientCtrlMove(MoveDir.Right);
+                    bHasSendCtrlThisTurn = true;
+                }
+            }
         }
 
 
@@ -42,8 +66,9 @@ namespace ayy
             network.ClientReady();
         }
 
-        void OnGameTurnMessage(string turnJson)
+        void OnGameTurnMessage(int turnIndex,string turnJson)
         {
+            bHasSendCtrlThisTurn = false;
             JsonData jd = JsonMapper.ToObject(turnJson);
             foreach (string strClientId in jd.Keys)
             {
@@ -64,6 +89,9 @@ namespace ayy
                     int spawnPointIndex = (int)jd["spawn_point"];
                     OnPlayerSpawn(clientId,spawnPointIndex);
                     break;
+                case "client_ctrl_move":
+                    OnPlayerCtrlMove(clientId, msgContent);
+                    break;
             }
         }
         
@@ -72,6 +100,27 @@ namespace ayy
             Vector3 pos = spawnPoints[spawnPosIndex];
             GameObject playerObject = GameObject.Instantiate(playerPrefab, pos, Quaternion.identity);
             playerMap.Add(clientId,playerObject); 
+        }
+
+        private void OnPlayerCtrlMove(int clientId,string strDir)
+        {
+            if (!playerMap.ContainsKey(clientId)) return;
+            GameObject go = playerMap[clientId];
+            switch (strDir)
+            {
+                case "up":
+                    go.transform.Translate(new Vector3(0,0,1));
+                    break;
+                case "down":
+                    go.transform.Translate(new Vector3(0, 0, -1));
+                    break;
+                case "left":
+                    go.transform.Translate(new Vector3(-1, 0, 0));
+                    break;
+                case "right":
+                    go.transform.Translate(new Vector3(1, 0, 0));
+                    break;
+            }
         }
     }
 }

@@ -212,8 +212,9 @@ namespace ayy
         {
             int connId = netMsg.conn.connectionId;
             if (_clientMap.ContainsKey(connId))
-            { 
-                
+            {
+                _currentTurn.OnMessage(netMsg);
+
             }
         }
 

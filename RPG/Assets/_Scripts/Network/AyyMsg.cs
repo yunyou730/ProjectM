@@ -22,11 +22,6 @@ namespace ayy
         Game_LockStep_Turn,         // 服务器发送给 客户端 的 lockstep 轮次 数据  
 
         Game_Client_Ctrl,           // client 发送给 server 的 操作数据 
-
-        /*
-        Game_Player_Move,           // 玩家操作  client 通知 server，server 做广播 
-        Game_Player_Fire,           // 玩家操作  client 通知 server，server 做广播 
-        */
     }
 
 
