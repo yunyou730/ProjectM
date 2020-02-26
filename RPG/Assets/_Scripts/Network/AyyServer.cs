@@ -126,11 +126,12 @@ namespace ayy
 
             if (_currentTurn.CheckPeriod())
             {
-                if (_currentTurn.CheckCollection(_clientMap.Count))
+                if (!_currentTurn.CheckCollection(_clientMap.Count))
                 {
-                    BroadCastTurn();
-                    NextTurn();
+                    FillEmptyMessageInNormalTurn();
                 }
+                BroadCastTurn();
+                NextTurn();
             }
         }
 
@@ -241,7 +242,7 @@ namespace ayy
 
         private void FillSpawnMessageInitialTurn()
         {
-            int index = 0;
+            int spawnPointIndex = 0;
             foreach (int connId in _clientMap.Keys)
             {
                 ClientRecord clientRecord = _clientMap[connId];
@@ -253,7 +254,7 @@ namespace ayy
                 JsonWriter writer = new JsonWriter();
                 writer.WriteObjectStart();
                 writer.WritePropertyName("spawn_point");
-                writer.Write(index);
+                writer.Write(spawnPointIndex);
                 writer.WriteObjectEnd();
 
                 gameMsg.content = writer.ToString();
@@ -261,7 +262,22 @@ namespace ayy
 
                 _currentTurn.AddMessage(connId,gameMsg);
 
-                index++;
+                spawnPointIndex++;
+            }
+        }
+
+        private void FillEmptyMessageInNormalTurn()
+        {
+            foreach (int connId in _clientMap.Keys)
+            {
+                if (!_currentTurn.messageMap.ContainsKey(connId))
+                {
+                    GameMessage gameMsg = new GameMessage();
+                    gameMsg.lockstepTurn = _currentTurn.turnIndex;
+                    gameMsg.msgType = "game_client_empty";
+                    gameMsg.content = "game_client_empty";
+                    _currentTurn.AddMessage(connId, gameMsg);
+                }
             }
         }
 

@@ -92,6 +92,9 @@ namespace ayy
                 case "client_ctrl_move":
                     OnPlayerCtrlMove(clientId, msgContent);
                     break;
+                case "game_client_empty":
+                    Debug.Log("client:" + clientId + " do nothing");
+                    break;
             }
         }
         
