@@ -18,8 +18,12 @@ namespace ayy
         Right,
     }
 
+
+
     public class AyyNetwork : MonoBehaviour
     {
+        public static int TURNS_PER_SECOND = 60;
+
         public AyyServer _server = null;
         public AyyClient _client = null;
         public bool IsServer { set; get; } = false;
@@ -27,10 +31,13 @@ namespace ayy
         public GameState gameState { set; get; } = GameState.Lobby;
 
         public bool IsWorking { set; get; } = false;
+
+        public string serverIP { set; get; } = "127.0.0.1";
+        public int serverPort { set; get; } = 20086;
         
         void Start()
         {
-            Time.fixedDeltaTime = 1 / 60.0f;
+            Time.fixedDeltaTime = (float)1 / (float)TURNS_PER_SECOND;
         }
 
         void Update()
@@ -51,22 +58,22 @@ namespace ayy
             if (IsWorking) return;
 
             _server = new AyyServer(this);
-            if (_server.Start())
+            if (_server.Start(serverPort))
             {
                 IsServer = true;
                 IsWorking = true;
 
                 _client = new AyyClient(this);
-                _client.Start();
+                _client.Start("127.0.0.1",serverPort);
             }
         }
 
-        public void StartAsClient()
+        public void StartAsClient(string ip,int port)
         {
             if (IsWorking) return;
 
             _client = new AyyClient(this);
-            _client.Start();
+            _client.Start(ip, port);
             IsServer = false;
             IsWorking = true;
         }

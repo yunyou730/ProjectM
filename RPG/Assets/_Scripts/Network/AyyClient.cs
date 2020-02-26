@@ -20,7 +20,7 @@ namespace ayy
             _context = context;
         }
 
-        public void Start()
+        public void Start(string serverIP,int serverPort)
         {
             _client = new NetworkClient();
             _client.RegisterHandler(MsgType.Connect, OnConnectedServer);
@@ -33,7 +33,7 @@ namespace ayy
             //_client.RegisterHandler((int)CustomMsgType.Game_Start, OnGameplayMsg);
             _client.RegisterHandler((int)CustomMsgType.Game_LockStep_Turn, OnGameplayMsg);
             // do start 
-            _client.Connect("127.0.0.1", 20086);
+            _client.Connect(serverIP, serverPort);
         }
 
         public void Close()

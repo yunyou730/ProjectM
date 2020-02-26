@@ -81,7 +81,7 @@ namespace ayy
             _context = context;
         }
 
-        public bool Start()
+        public bool Start(int port)
         {
             NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
             NetworkServer.RegisterHandler(MsgType.Disconnect, OnClientDisconnected);
@@ -92,7 +92,7 @@ namespace ayy
             NetworkServer.RegisterHandler((short)CustomMsgType.Game_Client_Ctrl, OnPlayerCtrl);
             
 
-            bool success = NetworkServer.Listen(20086);
+            bool success = NetworkServer.Listen(port);
             if (success)
             {
                 Debug.Log("Server start success.");

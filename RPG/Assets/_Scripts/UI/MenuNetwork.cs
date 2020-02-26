@@ -8,12 +8,16 @@ public class MenuNetwork : MonoBehaviour
 {
     public AyyNetwork _network = null;
     Text lockstepTurnIndexLabel = null;
+    Text serverIPLabel = null;
+    Text serverPortLabel = null;
 
     // Start is called before the first frame update
     void Start()
     {
         _network.GameTurnEvent += OnLockstepTurn;
         lockstepTurnIndexLabel = transform.Find("Label_TurnIndex").GetComponent<Text>();
+        serverIPLabel = transform.Find("Client_ConnectServerIP").Find("Text").GetComponent<Text>();
+        serverPortLabel = transform.Find("Client_ConnectServerPort").Find("Text").GetComponent<Text>();
     }
 
     // Update is called once per frame
@@ -34,7 +38,7 @@ public class MenuNetwork : MonoBehaviour
 
     public void OnClickStartClient()
     {
-        _network.StartAsClient();
+        _network.StartAsClient(serverIPLabel.text,int.Parse(serverPortLabel.text));
     }
 
     public void OnClickClientSend()
