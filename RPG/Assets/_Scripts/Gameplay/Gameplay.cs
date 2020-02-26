@@ -17,11 +17,20 @@ namespace ayy
 
 
         bool bHasSendCtrlThisTurn = false;
-        
+
+
+        Dictionary<int, Dictionary<KeyCode, bool>> clientKeyStateMap = new Dictionary<int, Dictionary<KeyCode, bool>>();
+        Dictionary<KeyCode, bool> careKeyMap = new Dictionary<KeyCode, bool>();
+
         private void Awake()
         {
             map = GameObject.Find("Map").GetComponent<MapMonoBehaviour>();
             network = GameObject.Find("NetworkManager").GetComponent<AyyNetwork>();
+
+            careKeyMap.Add(KeyCode.W,true);
+            careKeyMap.Add(KeyCode.S, true);
+            careKeyMap.Add(KeyCode.A, true);
+            careKeyMap.Add(KeyCode.D, true);
 
             network.GamePrepareEvent += OnStartLoadGame;
             network.GameTurnEvent += OnGameTurnMessage;
@@ -33,6 +42,13 @@ namespace ayy
         }
         
         void Update()
+        {
+            UpdateForSendCtrl();
+            UpdateForPlayerCtrl();
+        }
+
+
+        void UpdateForSendCtrl()
         {
             if (!bHasSendCtrlThisTurn)
             {
@@ -56,9 +72,58 @@ namespace ayy
                     network.ClientCtrlMove(MoveDir.Right);
                     bHasSendCtrlThisTurn = true;
                 }
+
+                foreach (KeyCode keyCode in careKeyMap.Keys)
+                {
+                    if (Input.GetKeyDown(keyCode))
+                    {
+                        network.ClientKeyPress(keyCode);
+                        bHasSendCtrlThisTurn = true;
+                    }
+                    else if (Input.GetKeyUp(keyCode))
+                    {
+                        network.ClientKeyRelease(keyCode);
+                        bHasSendCtrlThisTurn = true;
+                    }
+                }
+
             }
         }
 
+
+        void UpdateForPlayerCtrl()
+        {
+            foreach (int connId in playerMap.Keys)
+            {
+                UpdateOnePlayerCtrl(connId);
+            }
+        }
+
+        void UpdateOnePlayerCtrl(int connId)
+        {
+            GameObject playerGo = playerMap[connId];
+
+            float moveSpeed = 10;
+            Vector3 offset = new Vector3();
+            if (IsPlayerPressingKey(connId,KeyCode.W))
+            {
+                offset.z += Time.deltaTime * moveSpeed;
+            }
+            if (IsPlayerPressingKey(connId, KeyCode.S))
+            {
+                offset.z -= Time.deltaTime * moveSpeed;
+            }
+            if (IsPlayerPressingKey(connId, KeyCode.A))
+            {
+                offset.x -= Time.deltaTime * moveSpeed;
+            }
+            if (IsPlayerPressingKey(connId, KeyCode.D))
+            {
+                offset.x += Time.deltaTime * moveSpeed;
+            }
+            playerGo.transform.Translate(offset);
+        }
+    
 
         void OnStartLoadGame()
         {
@@ -95,6 +160,12 @@ namespace ayy
                 case "game_client_empty":
                     Debug.Log("client:" + clientId + " do nothing");
                     break;
+                case "client_key_press":
+                    OnPlayerKeyPress(clientId, msgContent);
+                    break;
+                case "client_key_release":
+                    OnPlayerKeyRelease(clientId, msgContent);
+                    break;
             }
         }
         
@@ -124,6 +195,54 @@ namespace ayy
                     go.transform.Translate(new Vector3(1, 0, 0));
                     break;
             }
+        }
+
+        private void OnPlayerKeyPress(int clientId,string msg)
+        {
+            KeyCode keyCode = (KeyCode)int.Parse(msg);
+            if (!clientKeyStateMap.ContainsKey(clientId))
+            {
+                clientKeyStateMap.Add(clientId, new Dictionary<KeyCode, bool>());
+            }
+            if (clientKeyStateMap[clientId].ContainsKey(keyCode))
+            {
+                clientKeyStateMap[clientId][keyCode] = true;
+            }
+            else
+            {
+                clientKeyStateMap[clientId].Add(keyCode, true);
+            }
+        }
+
+        private void OnPlayerKeyRelease(int clientId,string msg)
+        {
+            KeyCode keyCode = (KeyCode)int.Parse(msg);
+            if (!clientKeyStateMap.ContainsKey(clientId))
+            {
+                clientKeyStateMap.Add(clientId, new Dictionary<KeyCode, bool>());
+            }
+            if (clientKeyStateMap[clientId].ContainsKey(keyCode))
+            {
+                clientKeyStateMap[clientId][keyCode] = false;
+            }
+            else
+            {
+                clientKeyStateMap[clientId].Add(keyCode, false);
+            }
+        }
+
+
+        private bool IsPlayerPressingKey(int connId,KeyCode keyCode)
+        {
+            if (!clientKeyStateMap.ContainsKey(connId))
+            {
+                return false;
+            }
+            if (!clientKeyStateMap[connId].ContainsKey(keyCode))
+            {
+                return false;
+            }
+            return clientKeyStateMap[connId][keyCode];
         }
     }
 }

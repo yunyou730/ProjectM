@@ -89,6 +89,16 @@ namespace ayy
         }
 
 
+        public void ClientKeyPress(KeyCode keyCode)
+        {
+            _client.ClientKeyPress(keyCode);
+        }
+
+        public void ClientKeyRelease(KeyCode keyCode)
+        {
+            _client.ClientKeyRelease(keyCode);
+        }
+
 
         // ---------- Gameplay Code -------------- 
         public delegate void GamePrepare();

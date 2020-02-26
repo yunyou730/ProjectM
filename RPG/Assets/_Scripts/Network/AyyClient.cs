@@ -100,6 +100,22 @@ namespace ayy
             _conn.Send((int)CustomMsgType.Game_Client_Ctrl,msg);
         }
 
+        public void ClientKeyPress(KeyCode keyCode)
+        {
+            GameMessage msg = new GameMessage();
+            msg.msgType = "client_key_press";
+            msg.content = ((int)keyCode).ToString();
+            _conn.Send((int)CustomMsgType.Game_Client_Ctrl, msg);
+        }
+
+        public void ClientKeyRelease(KeyCode keyCode)
+        {
+            GameMessage msg = new GameMessage();
+            msg.msgType = "client_key_release";
+            msg.content = ((int)keyCode).ToString();
+            _conn.Send((int)CustomMsgType.Game_Client_Ctrl, msg);
+        }
+
         private void OnLobbyMsg(NetworkMessage netMsg)
         {
             LobbyMessage msg = new LobbyMessage();
