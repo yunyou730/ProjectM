@@ -51,6 +51,10 @@ namespace ayy
             {
                 _server.FixedUpdate(Time.fixedDeltaTime);
             }
+            if (_client != null)
+            {
+                _client.FixedUpdate(Time.fixedDeltaTime);
+            }
         }
 
         public void StartAsServer()
@@ -106,6 +110,15 @@ namespace ayy
             _client.ClientKeyRelease(keyCode);
         }
 
+        /*
+        public void ClientDoNothing()
+        {
+            if (_client != null)
+            {
+                _client.ClientDoNothing();
+            }
+        }
+        */
 
         // ---------- Gameplay Code -------------- 
         public delegate void GamePrepare();

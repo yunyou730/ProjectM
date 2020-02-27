@@ -16,7 +16,7 @@ namespace ayy
         Dictionary<int, GameObject> playerMap = new Dictionary<int, GameObject>();
 
 
-        bool bHasSendCtrlThisTurn = false;
+        //bool bHasSendCtrlThisTurn = false;
 
 
         Dictionary<int, Dictionary<KeyCode, bool>> clientKeyStateMap = new Dictionary<int, Dictionary<KeyCode, bool>>();
@@ -50,27 +50,27 @@ namespace ayy
 
         void UpdateForSendCtrl()
         {
-            if (!bHasSendCtrlThisTurn)
-            {
+            //if (!bHasSendCtrlThisTurn)
+            //{
                 if (Input.GetKeyDown(KeyCode.UpArrow))
                 {
                     network.ClientCtrlMove(MoveDir.Up);
-                    bHasSendCtrlThisTurn = true;
+                    //bHasSendCtrlThisTurn = true;
                 }
                 else if (Input.GetKeyDown(KeyCode.DownArrow))
                 {
                     network.ClientCtrlMove(MoveDir.Down);
-                    bHasSendCtrlThisTurn = true;
+                    //bHasSendCtrlThisTurn = true;
                 }
                 else if (Input.GetKeyDown(KeyCode.LeftArrow))
                 {
                     network.ClientCtrlMove(MoveDir.Left);
-                    bHasSendCtrlThisTurn = true;
+                    //bHasSendCtrlThisTurn = true;
                 }
                 else if (Input.GetKeyDown(KeyCode.RightArrow))
                 {
                     network.ClientCtrlMove(MoveDir.Right);
-                    bHasSendCtrlThisTurn = true;
+                    //bHasSendCtrlThisTurn = true;
                 }
 
                 foreach (KeyCode keyCode in careKeyMap.Keys)
@@ -78,16 +78,16 @@ namespace ayy
                     if (Input.GetKeyDown(keyCode))
                     {
                         network.ClientKeyPress(keyCode);
-                        bHasSendCtrlThisTurn = true;
+                        //bHasSendCtrlThisTurn = true;
                     }
                     else if (Input.GetKeyUp(keyCode))
                     {
                         network.ClientKeyRelease(keyCode);
-                        bHasSendCtrlThisTurn = true;
+                        //bHasSendCtrlThisTurn = true;
                     }
                 }
 
-            }
+            //}
         }
 
 
@@ -133,7 +133,7 @@ namespace ayy
 
         void OnGameTurnMessage(int turnIndex,string turnJson)
         {
-            bHasSendCtrlThisTurn = false;
+            //bHasSendCtrlThisTurn = false;
             JsonData jd = JsonMapper.ToObject(turnJson);
             foreach (string strClientId in jd.Keys)
             {

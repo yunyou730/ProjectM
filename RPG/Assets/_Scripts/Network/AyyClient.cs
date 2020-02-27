@@ -14,6 +14,12 @@ namespace ayy
         NetworkConnection _conn = null;
 
         public int turnIndex { get; set; } = 0;
+        public float turnStartTime = 0;
+        public bool bHandleThisTurn = false;
+        public float timeCounter = 0;
+
+
+        float MAX_TURN_PERIOD = 0;
 
         public AyyClient(AyyNetwork context)
         {
@@ -34,11 +40,25 @@ namespace ayy
             _client.RegisterHandler((int)CustomMsgType.Game_LockStep_Turn, OnGameplayMsg);
             // do start 
             _client.Connect(serverIP, serverPort);
+
+            MAX_TURN_PERIOD = Time.fixedDeltaTime;
         }
 
         public void Close()
         {
 
+        }
+
+        public void FixedUpdate(float deltaTime)
+        {
+            if (_conn != null)
+            {
+                timeCounter += deltaTime;
+                if (timeCounter - turnStartTime >= MAX_TURN_PERIOD && !bHandleThisTurn)
+                {
+                    ClientDoNothing();
+                }
+            }
         }
 
         private void OnConnectedServer(NetworkMessage netMsg)
@@ -98,6 +118,8 @@ namespace ayy
             }
             msg.content = content;
             _conn.Send((int)CustomMsgType.Game_Client_Ctrl,msg);
+
+            bHandleThisTurn = true;
         }
 
         public void ClientKeyPress(KeyCode keyCode)
@@ -106,6 +128,8 @@ namespace ayy
             msg.msgType = "client_key_press";
             msg.content = ((int)keyCode).ToString();
             _conn.Send((int)CustomMsgType.Game_Client_Ctrl, msg);
+
+            bHandleThisTurn = true;
         }
 
         public void ClientKeyRelease(KeyCode keyCode)
@@ -114,6 +138,19 @@ namespace ayy
             msg.msgType = "client_key_release";
             msg.content = ((int)keyCode).ToString();
             _conn.Send((int)CustomMsgType.Game_Client_Ctrl, msg);
+
+            bHandleThisTurn = true;
+        }
+
+
+        public void ClientDoNothing()
+        {
+            GameMessage msg = new GameMessage();
+            msg.msgType = "game_client_empty";
+            msg.content = "game_client_empty";
+            _conn.Send((int)CustomMsgType.Game_Client_Ctrl, msg);
+
+            bHandleThisTurn = true;
         }
 
         private void OnLobbyMsg(NetworkMessage netMsg)
@@ -127,6 +164,12 @@ namespace ayy
         {
             GameMessage msg = new GameMessage();
             msg.Deserialize(netMsg.reader);
+
+
+            turnIndex = msg.lockstepTurn;
+            turnStartTime = timeCounter;
+            bHandleThisTurn = false;
+
             _context.HandleMessage(msg);
         }
     }

@@ -126,12 +126,12 @@ namespace ayy
 
             if (_currentTurn.CheckPeriod())
             {
-                if (!_currentTurn.CheckCollection(_clientMap.Count))
+                if (_currentTurn.CheckCollection(_clientMap.Count))
                 {
-                    FillEmptyMessageInNormalTurn();
+                    //FillEmptyMessageInNormalTurn();
+                    BroadCastTurn();
+                    NextTurn();
                 }
-                BroadCastTurn();
-                NextTurn();
             }
         }
 
@@ -214,8 +214,10 @@ namespace ayy
             int connId = netMsg.conn.connectionId;
             if (_clientMap.ContainsKey(connId))
             {
-                _currentTurn.OnMessage(netMsg);
-
+                if (_currentTurn != null)
+                {
+                    _currentTurn.OnMessage(netMsg);
+                }
             }
         }
 
@@ -266,6 +268,7 @@ namespace ayy
             }
         }
 
+        /*
         private void FillEmptyMessageInNormalTurn()
         {
             foreach (int connId in _clientMap.Keys)
@@ -280,6 +283,7 @@ namespace ayy
                 }
             }
         }
+        */
 
         private void BroadCastTurn()
         {
