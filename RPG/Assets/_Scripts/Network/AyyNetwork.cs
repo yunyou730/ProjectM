@@ -22,7 +22,7 @@ namespace ayy
 
     public class AyyNetwork : MonoBehaviour
     {
-        public static int TURNS_PER_SECOND = 60;
+        public static float TURNS_PER_SECOND = 1.0f/30.0f;
 
         public AyyServer _server = null;
         public AyyClient _client = null;
@@ -34,28 +34,54 @@ namespace ayy
 
         public string serverIP { set; get; } = "127.0.0.1";
         public int serverPort { set; get; } = 20086;
+
+
+        float elapsedTime = 0;
         
         void Start()
-        {
-            Time.fixedDeltaTime = (float)1 / (float)TURNS_PER_SECOND;
-        }
-
-        void Update()
         {
             
         }
 
-        private void FixedUpdate()
+        void Update()
         {
-            if (_server != null)
+            if (_server == null && _client == null)
             {
-                _server.FixedUpdate(Time.fixedDeltaTime);
+                return;
             }
-            if (_client != null)
+            float dt = Time.deltaTime;
+            elapsedTime += dt;
+            while (elapsedTime >= TURNS_PER_SECOND)
             {
-                _client.FixedUpdate(Time.fixedDeltaTime);
+                float overTime = elapsedTime - TURNS_PER_SECOND;
+                elapsedTime = overTime;
+                OnLockStepTurn();
             }
         }
+
+        private void OnLockStepTurn()
+        {
+            if (_client != null)
+            {
+                _client.OnLockStepTurn();
+            }
+            if (_server != null)
+            {
+                _server.OnLockStepTurn();
+            }
+        }
+
+        //private void FixedUpdate()
+        //{
+        //    if (_server != null)
+        //    {
+        //        _server.FixedUpdate(Time.fixedDeltaTime);
+        //    }
+        //    if (_client != null)
+        //    {
+        //        _client.FixedUpdate(Time.fixedDeltaTime);
+        //    }
+        //}
 
         public void StartAsServer()
         {
@@ -109,16 +135,6 @@ namespace ayy
         {
             _client.ClientKeyRelease(keyCode);
         }
-
-        /*
-        public void ClientDoNothing()
-        {
-            if (_client != null)
-            {
-                _client.ClientDoNothing();
-            }
-        }
-        */
 
         // ---------- Gameplay Code -------------- 
         public delegate void GamePrepare();

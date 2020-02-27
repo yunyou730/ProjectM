@@ -5,12 +5,6 @@ using UnityEngine.Networking;
 
 namespace ayy
 {
-    public class CustomMsgTypes
-    {
-        public const short InGameMsg = 1003;
-    }
-
-
     public enum CustomMsgType
     {
         Lobby_CreateRoom = 1234,

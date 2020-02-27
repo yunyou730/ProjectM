@@ -12,3 +12,4 @@ RPG/obj/
 RPG/Temp/
 RPG_cp/.vs/
 build_osx
+build_win32/

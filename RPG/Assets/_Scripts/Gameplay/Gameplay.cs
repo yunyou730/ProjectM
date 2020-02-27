@@ -5,6 +5,11 @@ using LitJson;
 
 namespace ayy
 {
+    public class PrepareSendControl
+    { 
+        
+    }
+
     public class Gameplay : MonoBehaviour
     {
         MapMonoBehaviour    map = null;
@@ -13,10 +18,8 @@ namespace ayy
         public GameObject playerPrefab = null;
         public Vector3[] spawnPoints = null;
 
-        Dictionary<int, GameObject> playerMap = new Dictionary<int, GameObject>();
+        Dictionary<int, Player> playerMap = new Dictionary<int, Player>();
 
-
-        //bool bHasSendCtrlThisTurn = false;
 
 
         Dictionary<int, Dictionary<KeyCode, bool>> clientKeyStateMap = new Dictionary<int, Dictionary<KeyCode, bool>>();
@@ -43,87 +46,45 @@ namespace ayy
         
         void Update()
         {
+            float dt = Time.deltaTime;
             UpdateForSendCtrl();
-            UpdateForPlayerCtrl();
+            foreach (Player player in playerMap.Values)
+            {
+                player.Update(dt);
+            }
         }
-
 
         void UpdateForSendCtrl()
         {
-            //if (!bHasSendCtrlThisTurn)
-            //{
-                if (Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    network.ClientCtrlMove(MoveDir.Up);
-                    //bHasSendCtrlThisTurn = true;
-                }
-                else if (Input.GetKeyDown(KeyCode.DownArrow))
-                {
-                    network.ClientCtrlMove(MoveDir.Down);
-                    //bHasSendCtrlThisTurn = true;
-                }
-                else if (Input.GetKeyDown(KeyCode.LeftArrow))
-                {
-                    network.ClientCtrlMove(MoveDir.Left);
-                    //bHasSendCtrlThisTurn = true;
-                }
-                else if (Input.GetKeyDown(KeyCode.RightArrow))
-                {
-                    network.ClientCtrlMove(MoveDir.Right);
-                    //bHasSendCtrlThisTurn = true;
-                }
-
-                foreach (KeyCode keyCode in careKeyMap.Keys)
-                {
-                    if (Input.GetKeyDown(keyCode))
-                    {
-                        network.ClientKeyPress(keyCode);
-                        //bHasSendCtrlThisTurn = true;
-                    }
-                    else if (Input.GetKeyUp(keyCode))
-                    {
-                        network.ClientKeyRelease(keyCode);
-                        //bHasSendCtrlThisTurn = true;
-                    }
-                }
-
-            //}
-        }
-
-
-        void UpdateForPlayerCtrl()
-        {
-            foreach (int connId in playerMap.Keys)
+            if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                UpdateOnePlayerCtrl(connId);
+                network.ClientCtrlMove(MoveDir.Up);
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                network.ClientCtrlMove(MoveDir.Down);
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                network.ClientCtrlMove(MoveDir.Left);
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                network.ClientCtrlMove(MoveDir.Right);
+            }
+
+            foreach (KeyCode keyCode in careKeyMap.Keys)
+            {
+                if (Input.GetKeyDown(keyCode))
+                {
+                    network.ClientKeyPress(keyCode);
+                }
+                else if (Input.GetKeyUp(keyCode))
+                {
+                    network.ClientKeyRelease(keyCode);
+                }
             }
         }
-
-        void UpdateOnePlayerCtrl(int connId)
-        {
-            GameObject playerGo = playerMap[connId];
-
-            float moveSpeed = 10;
-            Vector3 offset = new Vector3();
-            if (IsPlayerPressingKey(connId,KeyCode.W))
-            {
-                offset.z += Time.deltaTime * moveSpeed;
-            }
-            if (IsPlayerPressingKey(connId, KeyCode.S))
-            {
-                offset.z -= Time.deltaTime * moveSpeed;
-            }
-            if (IsPlayerPressingKey(connId, KeyCode.A))
-            {
-                offset.x -= Time.deltaTime * moveSpeed;
-            }
-            if (IsPlayerPressingKey(connId, KeyCode.D))
-            {
-                offset.x += Time.deltaTime * moveSpeed;
-            }
-            playerGo.transform.Translate(offset);
-        }
-    
 
         void OnStartLoadGame()
         {
@@ -133,7 +94,6 @@ namespace ayy
 
         void OnGameTurnMessage(int turnIndex,string turnJson)
         {
-            //bHasSendCtrlThisTurn = false;
             JsonData jd = JsonMapper.ToObject(turnJson);
             foreach (string strClientId in jd.Keys)
             {
@@ -155,16 +115,27 @@ namespace ayy
                     OnPlayerSpawn(clientId,spawnPointIndex);
                     break;
                 case "client_ctrl_move":
-                    OnPlayerCtrlMove(clientId, msgContent);
+                    {
+                        Player p = playerMap[clientId];
+                        p.HandleMoveControl(msgContent);
+                    }
                     break;
                 case "game_client_empty":
                     Debug.Log("client:" + clientId + " do nothing");
                     break;
                 case "client_key_press":
-                    OnPlayerKeyPress(clientId, msgContent);
+                    {
+                        Player p = playerMap[clientId];
+                        KeyCode keyCode = (KeyCode)int.Parse(msgContent);
+                        p.HandleKeyPress(keyCode);
+                    }
                     break;
                 case "client_key_release":
-                    OnPlayerKeyRelease(clientId, msgContent);
+                    {
+                        Player p = playerMap[clientId];
+                        KeyCode keyCode = (KeyCode)int.Parse(msgContent);
+                        p.HandleKeyRelease(keyCode);
+                    }
                     break;
             }
         }
@@ -172,77 +143,9 @@ namespace ayy
         private void OnPlayerSpawn(int clientId,int spawnPosIndex)
         {
             Vector3 pos = spawnPoints[spawnPosIndex];
-            GameObject playerObject = GameObject.Instantiate(playerPrefab, pos, Quaternion.identity);
-            playerMap.Add(clientId,playerObject); 
-        }
-
-        private void OnPlayerCtrlMove(int clientId,string strDir)
-        {
-            if (!playerMap.ContainsKey(clientId)) return;
-            GameObject go = playerMap[clientId];
-            switch (strDir)
-            {
-                case "up":
-                    go.transform.Translate(new Vector3(0,0,1));
-                    break;
-                case "down":
-                    go.transform.Translate(new Vector3(0, 0, -1));
-                    break;
-                case "left":
-                    go.transform.Translate(new Vector3(-1, 0, 0));
-                    break;
-                case "right":
-                    go.transform.Translate(new Vector3(1, 0, 0));
-                    break;
-            }
-        }
-
-        private void OnPlayerKeyPress(int clientId,string msg)
-        {
-            KeyCode keyCode = (KeyCode)int.Parse(msg);
-            if (!clientKeyStateMap.ContainsKey(clientId))
-            {
-                clientKeyStateMap.Add(clientId, new Dictionary<KeyCode, bool>());
-            }
-            if (clientKeyStateMap[clientId].ContainsKey(keyCode))
-            {
-                clientKeyStateMap[clientId][keyCode] = true;
-            }
-            else
-            {
-                clientKeyStateMap[clientId].Add(keyCode, true);
-            }
-        }
-
-        private void OnPlayerKeyRelease(int clientId,string msg)
-        {
-            KeyCode keyCode = (KeyCode)int.Parse(msg);
-            if (!clientKeyStateMap.ContainsKey(clientId))
-            {
-                clientKeyStateMap.Add(clientId, new Dictionary<KeyCode, bool>());
-            }
-            if (clientKeyStateMap[clientId].ContainsKey(keyCode))
-            {
-                clientKeyStateMap[clientId][keyCode] = false;
-            }
-            else
-            {
-                clientKeyStateMap[clientId].Add(keyCode, false);
-            }
-        }
-
-
-        private bool IsPlayerPressingKey(int connId,KeyCode keyCode)
-        {
-            if (!clientKeyStateMap.ContainsKey(connId))
-            {
-                return false;
-            }
-            if (!clientKeyStateMap[connId].ContainsKey(keyCode))
-            {
-                return false;
-            }
-            return clientKeyStateMap[connId][keyCode];
+            GameObject go = GameObject.Instantiate(playerPrefab, pos, Quaternion.identity);
+            Player player = new Player(go);
+            playerMap.Add(clientId, player); 
         }
     }
 }
