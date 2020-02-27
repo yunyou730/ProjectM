@@ -180,6 +180,11 @@ namespace ayy
         {
             Debug.Log("mark turn handled:" + theTurnIndex);
             handledTurnMap.Add(theTurnIndex, true);
+
+            if (handledTurnMap.ContainsKey(theTurnIndex - 2))
+            {
+                handledTurnMap.Remove(theTurnIndex - 2);
+            }
         }
 
         private bool HasHandledTurn(int theTurnIndex)
