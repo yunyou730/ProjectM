@@ -43,7 +43,7 @@ public class MenuNetwork : MonoBehaviour
 
     public void OnClickClientSend()
     {
-        _network._client.Send();
+        //_network._client.Send();
     }
 
     private void OnLockstepTurn(int turnIndex,string json)

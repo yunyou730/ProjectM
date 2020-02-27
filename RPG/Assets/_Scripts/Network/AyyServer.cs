@@ -16,9 +16,9 @@ namespace ayy
     public class LockStepTurn
     {
         public int turnIndex = 0;
-        public float startTime = 0;
+        //public float startTime = 0;
         public float period = 0;
-        public float shouldKeepPeriod = 0;
+        //public float shouldKeepPeriod = 0;
         public Dictionary<int, GameMessage> messageMap = new Dictionary<int, GameMessage>();
 
 
@@ -51,10 +51,10 @@ namespace ayy
         {
             period += deltaTime;
         }
-        public bool CheckPeriod()
-        {
-            return period >= shouldKeepPeriod;
-        }
+        //public bool CheckPeriod()
+        //{
+        //    return period >= shouldKeepPeriod;
+        //}
     }
 
     public class AyyServer
@@ -67,12 +67,12 @@ namespace ayy
 
         int _lockstepTurnIndexCounter = 0;
 
-        float MAX_TURN_PERIOD = 0;
+        //float MAX_TURN_PERIOD = 0;
         LockStepTurn _currentTurn = null;
 
         
         // 用于记录时间 
-        float _timeCounter = 0; 
+        //float _timeCounter = 0; 
 
         
 
@@ -86,7 +86,6 @@ namespace ayy
             NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
             NetworkServer.RegisterHandler(MsgType.Disconnect, OnClientDisconnected);
             NetworkServer.RegisterHandler(MsgType.Error, OnError);
-            NetworkServer.RegisterHandler(CustomMsgTypes.InGameMsg, OnInGameMsg);
 
             NetworkServer.RegisterHandler((short)CustomMsgType.Lobby_Player_Ready,OnPlayerReady);
             NetworkServer.RegisterHandler((short)CustomMsgType.Game_Client_Ctrl, OnPlayerCtrl);
@@ -102,11 +101,11 @@ namespace ayy
                 Debug.Log("Server start failed.");
             }
             
-            MAX_TURN_PERIOD = Time.fixedDeltaTime;
+            //MAX_TURN_PERIOD = Time.fixedDeltaTime;
 
             _readyCount = 0;
             _lobbyMsgCounter = 0;
-            _timeCounter = 0;
+            //_timeCounter = 0;
             return success;
         }
 
@@ -115,23 +114,13 @@ namespace ayy
 
         }
 
-        public void FixedUpdate(float deltaTime)
+        
+        public void OnLockStepTurn()
         {
-            _timeCounter += deltaTime;
-            if (_currentTurn == null)
+            if (_currentTurn != null && _currentTurn.CheckCollection(_clientMap.Count))
             {
-                return;
-            }
-            _currentTurn.TimeElapse(deltaTime);
-
-            if (_currentTurn.CheckPeriod())
-            {
-                if (_currentTurn.CheckCollection(_clientMap.Count))
-                {
-                    //FillEmptyMessageInNormalTurn();
-                    BroadCastTurn();
-                    NextTurn();
-                }
+                BroadCastTurn();
+                NextTurn();
             }
         }
 
@@ -164,13 +153,6 @@ namespace ayy
         private void OnError(NetworkMessage netMsg)
         {
             Debug.Log(netMsg);
-        }
-
-        private void OnInGameMsg(NetworkMessage netMsg)
-        {
-            CustomMessage msg = new CustomMessage();
-            msg.Deserialize(netMsg.reader);
-            Debug.Log("OnInGameMsg:" + msg.ToString());
         }
 
         private void OnClientJoinLobby(NetworkMessage netMsg)
@@ -235,8 +217,8 @@ namespace ayy
             
             LockStepTurn turn = new LockStepTurn();
             turn.turnIndex = _lockstepTurnIndexCounter;
-            turn.startTime = _timeCounter;
-            turn.shouldKeepPeriod = MAX_TURN_PERIOD;
+            //turn.startTime = _timeCounter;
+            //turn.shouldKeepPeriod = MAX_TURN_PERIOD;
             turn.period = 0;
 
             _currentTurn = turn;

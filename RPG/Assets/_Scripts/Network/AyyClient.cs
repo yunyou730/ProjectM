@@ -9,17 +9,19 @@ namespace ayy
     {
         private AyyNetwork _context;
         private NetworkClient _client = null;
-        private int _sendCounter = 0;
+        //private int _sendCounter = 0;
 
         NetworkConnection _conn = null;
 
         public int turnIndex { get; set; } = 0;
         public float turnStartTime = 0;
-        public bool bHandleThisTurn = false;
+        //public bool bHandleThisTurn = false;
         public float timeCounter = 0;
 
+        Dictionary<int, bool> handledTurnMap = new Dictionary<int, bool>();
 
-        float MAX_TURN_PERIOD = 0;
+
+        //float MAX_TURN_PERIOD = 0;
 
         public AyyClient(AyyNetwork context)
         {
@@ -41,7 +43,7 @@ namespace ayy
             // do start 
             _client.Connect(serverIP, serverPort);
 
-            MAX_TURN_PERIOD = Time.fixedDeltaTime;
+            //MAX_TURN_PERIOD = Time.fixedDeltaTime;
         }
 
         public void Close()
@@ -51,13 +53,21 @@ namespace ayy
 
         public void FixedUpdate(float deltaTime)
         {
-            if (_conn != null)
+            //if (_conn != null)
+            //{
+            //    timeCounter += deltaTime;
+            //    if (timeCounter - turnStartTime >= MAX_TURN_PERIOD && !bHandleThisTurn)
+            //    {
+            //        ClientDoNothing();
+            //    }
+            //}
+        }
+
+        public void OnLockStepTurn()
+        {
+            if (!HasHandledTurn(turnIndex))
             {
-                timeCounter += deltaTime;
-                if (timeCounter - turnStartTime >= MAX_TURN_PERIOD && !bHandleThisTurn)
-                {
-                    ClientDoNothing();
-                }
+                ClientDoNothing();
             }
         }
 
@@ -77,17 +87,6 @@ namespace ayy
             Debug.Log(netMsg);
         }
 
-
-        public void Send()
-        {
-            CustomMessage msg = new CustomMessage();
-            msg._uuid = ++_sendCounter;
-            msg._content = "ayyyyy";
-            msg._vector = new Vector3(1,1,0);
-            msg._bytes = new byte[100];
-            _conn.Send(CustomMsgTypes.InGameMsg,msg);
-        }
-
         public void ClientReady()
         {
             LobbyMessage msg = new LobbyMessage();
@@ -98,6 +97,10 @@ namespace ayy
 
         public void ClientCtrlMove(MoveDir moveDir)
         {
+            if (HasHandledTurn(turnIndex)) 
+                return;
+            MarkTurnHandled(turnIndex);
+
             GameMessage msg = new GameMessage();
             msg.msgType = "client_ctrl_move";
             string content = "";
@@ -119,38 +122,43 @@ namespace ayy
             msg.content = content;
             _conn.Send((int)CustomMsgType.Game_Client_Ctrl,msg);
 
-            bHandleThisTurn = true;
         }
 
         public void ClientKeyPress(KeyCode keyCode)
         {
+            if (HasHandledTurn(turnIndex)) 
+                return;
+            MarkTurnHandled(turnIndex);
+
             GameMessage msg = new GameMessage();
             msg.msgType = "client_key_press";
             msg.content = ((int)keyCode).ToString();
             _conn.Send((int)CustomMsgType.Game_Client_Ctrl, msg);
-
-            bHandleThisTurn = true;
         }
 
         public void ClientKeyRelease(KeyCode keyCode)
         {
+            if (HasHandledTurn(turnIndex)) 
+                return;
+            MarkTurnHandled(turnIndex);
+
             GameMessage msg = new GameMessage();
             msg.msgType = "client_key_release";
             msg.content = ((int)keyCode).ToString();
             _conn.Send((int)CustomMsgType.Game_Client_Ctrl, msg);
-
-            bHandleThisTurn = true;
         }
 
 
         public void ClientDoNothing()
         {
+            if (HasHandledTurn(turnIndex))
+                return;
+            MarkTurnHandled(turnIndex);
+
             GameMessage msg = new GameMessage();
             msg.msgType = "game_client_empty";
             msg.content = "game_client_empty";
             _conn.Send((int)CustomMsgType.Game_Client_Ctrl, msg);
-
-            bHandleThisTurn = true;
         }
 
         private void OnLobbyMsg(NetworkMessage netMsg)
@@ -168,9 +176,19 @@ namespace ayy
 
             turnIndex = msg.lockstepTurn;
             turnStartTime = timeCounter;
-            bHandleThisTurn = false;
+            //bHandleThisTurn = false;
 
             _context.HandleMessage(msg);
+        }
+
+        private void MarkTurnHandled(int theTurnIndex)
+        {
+            handledTurnMap.Add(theTurnIndex, true);
+        }
+
+        private bool HasHandledTurn(int theTurnIndex)
+        {
+            return handledTurnMap.ContainsKey(theTurnIndex);
         }
     }
 }
