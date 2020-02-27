@@ -23,6 +23,7 @@ namespace ayy
     public class AyyNetwork : MonoBehaviour
     {
         public static float TURNS_PER_SECOND = 1.0f/30.0f;
+        //public static float TURNS_PER_SECOND = 0.1f;
 
         public AyyServer _server = null;
         public AyyClient _client = null;
@@ -37,10 +38,27 @@ namespace ayy
 
 
         float elapsedTime = 0;
-        
+
+        Dictionary<KeyCode, bool> careKeyMap = new Dictionary<KeyCode, bool>();
+        Dictionary<KeyCode, bool> keyPressState = new Dictionary<KeyCode, bool>();
+
         void Start()
         {
-            
+            /*
+            careKeyMap.Add(KeyCode.W, true);
+            careKeyMap.Add(KeyCode.S, true);
+            careKeyMap.Add(KeyCode.A, true);
+            careKeyMap.Add(KeyCode.D, true);
+            */
+            careKeyMap.Add(KeyCode.UpArrow, true);
+            careKeyMap.Add(KeyCode.DownArrow, true);
+            careKeyMap.Add(KeyCode.LeftArrow, true);
+            careKeyMap.Add(KeyCode.RightArrow, true);
+
+            foreach (KeyCode key in careKeyMap.Keys)
+            {
+                keyPressState[key] = false;
+            }
         }
 
         void Update()
@@ -49,20 +67,27 @@ namespace ayy
             {
                 return;
             }
+            UpdateCollectCtrl();
+
+
             float dt = Time.deltaTime;
             elapsedTime += dt;
+
             while (elapsedTime >= TURNS_PER_SECOND)
             {
                 float overTime = elapsedTime - TURNS_PER_SECOND;
                 elapsedTime = overTime;
                 OnLockStepTurn();
             }
-        }
 
+        }
+        
         private void OnLockStepTurn()
         {
+            Debug.Log("OnLockStepTurn ----- ");
             if (_client != null)
             {
+                UpdateForSendCtrl();
                 _client.OnLockStepTurn();
             }
             if (_server != null)
@@ -71,17 +96,90 @@ namespace ayy
             }
         }
 
-        //private void FixedUpdate()
-        //{
-        //    if (_server != null)
-        //    {
-        //        _server.FixedUpdate(Time.fixedDeltaTime);
-        //    }
-        //    if (_client != null)
-        //    {
-        //        _client.FixedUpdate(Time.fixedDeltaTime);
-        //    }
-        //}
+        private void UpdateCollectCtrl()
+        {
+            foreach (KeyCode keyCode in careKeyMap.Keys)
+            {
+                if (Input.GetKeyDown(keyCode))
+                {
+                    keyPressState[keyCode] = true;
+                }
+                else if (Input.GetKeyUp(keyCode))
+                {
+                    keyPressState[keyCode] = false;
+                }
+            }
+        }
+
+
+        private void UpdateForSendCtrl()
+        {
+            /*
+            AyyNetwork network = this;
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                network.ClientCtrlMove(MoveDir.Up);
+                Debug.Log("up");
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                network.ClientCtrlMove(MoveDir.Down);
+                Debug.Log("down");
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                network.ClientCtrlMove(MoveDir.Left);
+                Debug.Log("left");
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                network.ClientCtrlMove(MoveDir.Right);
+                //Debug.Log("right");
+            }
+
+            foreach (KeyCode keyCode in careKeyMap.Keys)
+            {
+                if (Input.GetKeyDown(keyCode))
+                {
+                    //network.ClientKeyPress(keyCode);
+                }
+                else if (Input.GetKeyUp(keyCode))
+                {
+                    //network.ClientKeyRelease(keyCode);
+                }
+            }
+            */
+            foreach (KeyCode key in careKeyMap.Keys)
+            {
+                if (keyPressState[key])
+                {
+                    //ClientKeyPress(key);
+                    MoveDir dir = MoveDir.Up;
+                    switch(key)
+                    {
+                        case KeyCode.UpArrow:
+                            dir = MoveDir.Up;
+                            break;
+                        case KeyCode.DownArrow:
+                            dir = MoveDir.Down;
+                            break;
+                        case KeyCode.LeftArrow:
+                            dir = MoveDir.Left;
+                            break;
+                        case KeyCode.RightArrow:
+                            dir = MoveDir.Right;
+                            break;
+                    }
+                    ClientCtrlMove(dir);
+                }
+                /*
+                else
+                {
+                    ClientKeyRelease(key);
+                }
+                */
+            }
+        }
 
         public void StartAsServer()
         {
@@ -159,7 +257,7 @@ namespace ayy
 
         public void HandleMessage(GameMessage msg)
         {
-            Debug.Log("[HandleMessage(GameMessage)] " + msg.msgType);
+            //Debug.Log("[HandleMessage(GameMessage)] " + msg.msgType);
             switch (msg.msgType)
             {
                 case "start_game":

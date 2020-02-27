@@ -23,17 +23,17 @@ namespace ayy
 
 
         Dictionary<int, Dictionary<KeyCode, bool>> clientKeyStateMap = new Dictionary<int, Dictionary<KeyCode, bool>>();
-        Dictionary<KeyCode, bool> careKeyMap = new Dictionary<KeyCode, bool>();
+        //Dictionary<KeyCode, bool> careKeyMap = new Dictionary<KeyCode, bool>();
 
         private void Awake()
         {
             map = GameObject.Find("Map").GetComponent<MapMonoBehaviour>();
             network = GameObject.Find("NetworkManager").GetComponent<AyyNetwork>();
 
-            careKeyMap.Add(KeyCode.W,true);
-            careKeyMap.Add(KeyCode.S, true);
-            careKeyMap.Add(KeyCode.A, true);
-            careKeyMap.Add(KeyCode.D, true);
+            //careKeyMap.Add(KeyCode.W,true);
+            //careKeyMap.Add(KeyCode.S, true);
+            //careKeyMap.Add(KeyCode.A, true);
+            //careKeyMap.Add(KeyCode.D, true);
 
             network.GamePrepareEvent += OnStartLoadGame;
             network.GameTurnEvent += OnGameTurnMessage;
@@ -47,30 +47,35 @@ namespace ayy
         void Update()
         {
             float dt = Time.deltaTime;
-            UpdateForSendCtrl();
+            //UpdateForSendCtrl();
             foreach (Player player in playerMap.Values)
             {
                 player.Update(dt);
             }
         }
 
+        /*
         void UpdateForSendCtrl()
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 network.ClientCtrlMove(MoveDir.Up);
+                Debug.Log("up");
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 network.ClientCtrlMove(MoveDir.Down);
+                Debug.Log("down");
             }
             else if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 network.ClientCtrlMove(MoveDir.Left);
+                Debug.Log("left");
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 network.ClientCtrlMove(MoveDir.Right);
+                Debug.Log("right");
             }
 
             foreach (KeyCode keyCode in careKeyMap.Keys)
@@ -85,7 +90,7 @@ namespace ayy
                 }
             }
         }
-
+        */
         void OnStartLoadGame()
         {
             map.CreateMap();
@@ -121,7 +126,7 @@ namespace ayy
                     }
                     break;
                 case "game_client_empty":
-                    Debug.Log("client:" + clientId + " do nothing");
+                    //Debug.Log("client:" + clientId + " do nothing");
                     break;
                 case "client_key_press":
                     {

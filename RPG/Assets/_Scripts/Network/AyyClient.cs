@@ -51,18 +51,6 @@ namespace ayy
 
         }
 
-        public void FixedUpdate(float deltaTime)
-        {
-            //if (_conn != null)
-            //{
-            //    timeCounter += deltaTime;
-            //    if (timeCounter - turnStartTime >= MAX_TURN_PERIOD && !bHandleThisTurn)
-            //    {
-            //        ClientDoNothing();
-            //    }
-            //}
-        }
-
         public void OnLockStepTurn()
         {
             if (!HasHandledTurn(turnIndex))
@@ -97,8 +85,11 @@ namespace ayy
 
         public void ClientCtrlMove(MoveDir moveDir)
         {
-            if (HasHandledTurn(turnIndex)) 
+            if (HasHandledTurn(turnIndex))
+            {
+                Debug.Log("has handled turn:" + turnIndex);
                 return;
+            }
             MarkTurnHandled(turnIndex);
 
             GameMessage msg = new GameMessage();
@@ -151,6 +142,10 @@ namespace ayy
 
         public void ClientDoNothing()
         {
+            if (_conn == null)
+            {
+                return;
+            }
             if (HasHandledTurn(turnIndex))
                 return;
             MarkTurnHandled(turnIndex);
@@ -183,6 +178,7 @@ namespace ayy
 
         private void MarkTurnHandled(int theTurnIndex)
         {
+            Debug.Log("mark turn handled:" + theTurnIndex);
             handledTurnMap.Add(theTurnIndex, true);
         }
 

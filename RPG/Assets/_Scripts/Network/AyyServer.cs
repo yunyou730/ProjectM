@@ -66,14 +66,7 @@ namespace ayy
         int _lobbyMsgCounter = 0;
 
         int _lockstepTurnIndexCounter = 0;
-
-        //float MAX_TURN_PERIOD = 0;
         LockStepTurn _currentTurn = null;
-
-        
-        // 用于记录时间 
-        //float _timeCounter = 0; 
-
         
 
         public AyyServer(AyyNetwork context)
@@ -100,12 +93,9 @@ namespace ayy
             {
                 Debug.Log("Server start failed.");
             }
-            
-            //MAX_TURN_PERIOD = Time.fixedDeltaTime;
 
             _readyCount = 0;
             _lobbyMsgCounter = 0;
-            //_timeCounter = 0;
             return success;
         }
 
@@ -217,8 +207,6 @@ namespace ayy
             
             LockStepTurn turn = new LockStepTurn();
             turn.turnIndex = _lockstepTurnIndexCounter;
-            //turn.startTime = _timeCounter;
-            //turn.shouldKeepPeriod = MAX_TURN_PERIOD;
             turn.period = 0;
 
             _currentTurn = turn;
@@ -296,7 +284,7 @@ namespace ayy
             }
             writer.WriteObjectEnd();
             sendMsg.content = writer.ToString();
-            Debug.Log("send msg content:" + sendMsg.content);
+            //Debug.Log("send msg content:" + sendMsg.content);
 
             // Send message to each client
             foreach (int connId in _clientMap.Keys)
