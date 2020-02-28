@@ -59,8 +59,15 @@ namespace ayy
 
         public void Update(float deltaTime)
         {
+            timeCounter += deltaTime;
             UpdateCollectCtrl();
+            if (timeCounter - turnStartTime >= AyyNetwork.TURNS_PER_SECOND)
+            {
+                OnLockStepTurn();
+            }
         }
+
+
         private void UpdateCollectCtrl()
         {
             foreach (KeyCode keyCode in careKeyMap.Keys)
@@ -79,7 +86,7 @@ namespace ayy
 
         private void UpdateForSendCtrl()
         {
-            Debug.Log("UpdateForSendCtrl **");
+            //Debug.Log("UpdateForSendCtrl **");
             foreach (KeyCode key in careKeyMap.Keys)
             {
                 if (keyPressState[key])
@@ -109,7 +116,7 @@ namespace ayy
         {
             UpdateForSendCtrl();
 
-            Debug.Log("OnLockStepTurn **");
+            //Debug.Log("OnLockStepTurn **");
             if (!HasHandledTurn(turnIndex))
             {
                 ClientDoNothing();

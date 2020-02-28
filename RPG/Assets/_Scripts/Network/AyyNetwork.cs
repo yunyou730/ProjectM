@@ -59,28 +59,6 @@ namespace ayy
             {
                 _server.Update(Time.deltaTime);
             }
-
-
-            float dt = Time.deltaTime;
-            elapsedTime += dt;
-
-            while (elapsedTime >= TURNS_PER_SECOND)
-            {
-                float overTime = elapsedTime - TURNS_PER_SECOND;
-                elapsedTime = overTime;
-                OnLockStepTurn();
-            }
-
-        }
-        
-        private void OnLockStepTurn()
-        {
-            //Debug.Log("OnLockStepTurn ----- ");
-            if (_client != null)
-            {
-                //UpdateForSendCtrl();
-                _client.OnLockStepTurn();
-            }
         }
 
 
