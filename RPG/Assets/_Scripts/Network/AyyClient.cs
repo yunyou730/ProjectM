@@ -9,19 +9,18 @@ namespace ayy
     {
         private AyyNetwork _context;
         private NetworkClient _client = null;
-        //private int _sendCounter = 0;
 
         NetworkConnection _conn = null;
 
         public int turnIndex { get; set; } = 0;
         public float turnStartTime = 0;
-        //public bool bHandleThisTurn = false;
         public float timeCounter = 0;
 
         Dictionary<int, bool> handledTurnMap = new Dictionary<int, bool>();
 
 
-        //float MAX_TURN_PERIOD = 0;
+        Dictionary<KeyCode, bool> careKeyMap = new Dictionary<KeyCode, bool>();
+        Dictionary<KeyCode, bool> keyPressState = new Dictionary<KeyCode, bool>();
 
         public AyyClient(AyyNetwork context)
         {
@@ -38,12 +37,19 @@ namespace ayy
             // lobby
             _client.RegisterHandler((int)CustomMsgType.Lobby_Server_Prepare, OnLobbyMsg);
             // gameplay
-            //_client.RegisterHandler((int)CustomMsgType.Game_Start, OnGameplayMsg);
             _client.RegisterHandler((int)CustomMsgType.Game_LockStep_Turn, OnGameplayMsg);
             // do start 
             _client.Connect(serverIP, serverPort);
 
-            //MAX_TURN_PERIOD = Time.fixedDeltaTime;
+            // Key State
+            careKeyMap.Add(KeyCode.UpArrow, true);
+            careKeyMap.Add(KeyCode.DownArrow, true);
+            careKeyMap.Add(KeyCode.LeftArrow, true);
+            careKeyMap.Add(KeyCode.RightArrow, true);
+            foreach (KeyCode key in careKeyMap.Keys)
+            {
+                keyPressState[key] = false;
+            }
         }
 
         public void Close()
@@ -51,8 +57,59 @@ namespace ayy
 
         }
 
+        public void Update(float deltaTime)
+        {
+            UpdateCollectCtrl();
+        }
+        private void UpdateCollectCtrl()
+        {
+            foreach (KeyCode keyCode in careKeyMap.Keys)
+            {
+                if (Input.GetKeyDown(keyCode))
+                {
+                    keyPressState[keyCode] = true;
+                }
+                else if (Input.GetKeyUp(keyCode))
+                {
+                    keyPressState[keyCode] = false;
+                }
+            }
+        }
+
+
+        private void UpdateForSendCtrl()
+        {
+            Debug.Log("UpdateForSendCtrl **");
+            foreach (KeyCode key in careKeyMap.Keys)
+            {
+                if (keyPressState[key])
+                {
+                    MoveDir dir = MoveDir.Up;
+                    switch (key)
+                    {
+                        case KeyCode.UpArrow:
+                            dir = MoveDir.Up;
+                            break;
+                        case KeyCode.DownArrow:
+                            dir = MoveDir.Down;
+                            break;
+                        case KeyCode.LeftArrow:
+                            dir = MoveDir.Left;
+                            break;
+                        case KeyCode.RightArrow:
+                            dir = MoveDir.Right;
+                            break;
+                    }
+                    ClientCtrlMove(dir);
+                }
+            }
+        }
+
         public void OnLockStepTurn()
         {
+            UpdateForSendCtrl();
+
+            Debug.Log("OnLockStepTurn **");
             if (!HasHandledTurn(turnIndex))
             {
                 ClientDoNothing();
@@ -87,7 +144,7 @@ namespace ayy
         {
             if (HasHandledTurn(turnIndex))
             {
-                Debug.Log("has handled turn:" + turnIndex);
+                Debug.LogWarning("has handled turn:" + turnIndex);
                 return;
             }
             MarkTurnHandled(turnIndex);
@@ -168,10 +225,11 @@ namespace ayy
             GameMessage msg = new GameMessage();
             msg.Deserialize(netMsg.reader);
 
-
             turnIndex = msg.lockstepTurn;
             turnStartTime = timeCounter;
-            //bHandleThisTurn = false;
+
+
+            Debug.Log("OnGameplayMsg --- turnIndex:" + turnIndex);
 
             _context.HandleMessage(msg);
         }

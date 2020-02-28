@@ -18,6 +18,9 @@ public class MenuNetwork : MonoBehaviour
         lockstepTurnIndexLabel = transform.Find("Label_TurnIndex").GetComponent<Text>();
         serverIPLabel = transform.Find("Client_ConnectServerIP").Find("Text").GetComponent<Text>();
         serverPortLabel = transform.Find("Client_ConnectServerPort").Find("Text").GetComponent<Text>();
+
+        serverIPLabel.text = "127.0.0.1";
+        serverPortLabel.text = "20086";
     }
 
     // Update is called once per frame

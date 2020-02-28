@@ -6,7 +6,6 @@ using LitJson;
 
 namespace ayy
 {
-
     public class ClientRecord
     {
         public bool bReady = false;
@@ -16,9 +15,7 @@ namespace ayy
     public class LockStepTurn
     {
         public int turnIndex = 0;
-        //public float startTime = 0;
         public float period = 0;
-        //public float shouldKeepPeriod = 0;
         public Dictionary<int, GameMessage> messageMap = new Dictionary<int, GameMessage>();
 
 
@@ -67,7 +64,9 @@ namespace ayy
 
         int _lockstepTurnIndexCounter = 0;
         LockStepTurn _currentTurn = null;
-        
+
+        bool bGameStarted = false;
+        float elapsedTime = 0;
 
         public AyyServer(AyyNetwork context)
         {
@@ -104,8 +103,22 @@ namespace ayy
 
         }
 
+        public void Update(float deltaTime)
+        {
+            if (!bGameStarted)
+            {
+                return;
+            }
+            elapsedTime += deltaTime;
+            while (elapsedTime >= AyyNetwork.TURNS_PER_SECOND)
+            {
+                float overTime = elapsedTime - AyyNetwork.TURNS_PER_SECOND;
+                elapsedTime = overTime;
+                OnLockStepTurn();
+            }
+        }
         
-        public void OnLockStepTurn()
+        private void OnLockStepTurn()
         {
             if (_currentTurn != null && _currentTurn.CheckCollection(_clientMap.Count))
             {
@@ -125,6 +138,8 @@ namespace ayy
                 ClientRecord clientRecord = _clientMap[connId];
                 clientRecord.conn.Send((int)CustomMsgType.Lobby_Server_Prepare, msg);
             }
+            bGameStarted = true;
+            elapsedTime = 0;
         }
 
         private void OnClientConnected(NetworkMessage netMsg)
