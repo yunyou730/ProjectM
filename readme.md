@@ -36,6 +36,25 @@ LockStep 机制基本完成. 后续计划
  - 增加 Client 掉线 的 处理 和 显示  
 
 
+
+客户端如何看到现有的 server ?  
+	
+
+ >很简单，IP地址当中有一种地址叫做广播地址，包括全局广播地址（255.255.255.255)和子网广播地址（一般为子网最后一个地址）两种。向这个地址发udp包则所有连接在同一个路由器上的或者该子网当中的任意IP地址都可以收到这个包。  
+
+
+[http://www.cs.ubbcluj.ro/~dadi/compnet/labs/lab3/udp-broadcast.html](http://www.cs.ubbcluj.ro/~dadi/compnet/labs/lab3/udp-broadcast.html)  
+
+尝试方案: 
+
+lobby 阶段的服务器,每帧往 255.255.255.255 地址 发送  UDP 消息,来解决 客户端显示所有现有主机的问题   
+
+
+
+
+
+
+
  
  
 
