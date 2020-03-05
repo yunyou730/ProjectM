@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 005_aries_s_zb_y
+  m_Shader: {fileID: 4800000, guid: 22678ad0d9260424d9d47fdd5d470e90, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - DenierMap:
+        m_Texture: {fileID: 2800000, guid: 3251dd16e448bce40a458a7742178d24, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - NormalMap:
+        m_Texture: {fileID: 2800000, guid: 0b781876f2bf84c4f99738f56596c330, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - SkinBaseMap:
+        m_Texture: {fileID: 2800000, guid: 54f6d164d5c575f4486f93760d192943, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - SkinRampTexture:
+        m_Texture: {fileID: 2800000, guid: 1cc47d98615e88845be1e78bf2af2ac7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - SkinTexture:
+        m_Texture: {fileID: 2800000, guid: b1a5539c86f29d040837c946ac8952e3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - SpecularMask:
+        m_Texture: {fileID: 2800000, guid: 68be06e592611644c96594f048229151, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - StockingBaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - StockingTexture:
+        m_Texture: {fileID: 2800000, guid: d851e762c0f27b240b1b2c4c10479c58, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - TransitionMap:
+        m_Texture: {fileID: 2800000, guid: 4f7bcb62367b45a41be58f418c0fa4ab, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - TransitionTexture:
+        m_Texture: {fileID: 2800000, guid: 4c680bdbbbc4f5f48897724ef4d89a5d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - CameraZOffset: 0
+    - MaxOutlineDistance: 5
+    - Metallic: 0.686
+    - MinOutlineDistance: 0
+    - NylonSpecularLayer1Intensity: 0.5
+    - NylonSpecularLayer1Roughness: 0.824
+    - NylonSpecularLayer1Shift: -0.189
+    - NylonSpecularLayer2Intensity: 0.2
+    - NylonSpecularLayer2Roughness: 1
+    - NylonSpecularLayer2Shift: 0.04
+    - OutlineWidth: 0
+    - OutlineWidthMultiplier: 1
+    - SkinBaseMapTintIntensity: 10
+    - StockingBaseMapTintIntensity: 2.05
+    - UseVertexOutlineColor: 0
+    m_Colors:
+    - NylonSpecularLayer1Color: {r: 0.8113208, g: 0.7741738, b: 0.5931827, a: 1}
+    - NylonSpecularLayer2Color: {r: 0.88554645, g: 0.90979576, b: 0.9433962, a: 1}
+    - OutlineColor: {r: 0.73813796, g: 0.39288896, b: 0.764151, a: 1}
+    - SkinBaseMapTint: {r: 0.7372549, g: 0.37254903, b: 0.3372549, a: 1}
+    - StockingBaseMapTint: {r: 0.9528302, g: 0.7578634, b: 0.7505785, a: 1}

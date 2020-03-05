@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 450d97d681aac294aa859b5b42b527b7, type: 3}
+  m_Name: KanBanNiangPostProcess
+  m_EditorClassIdentifier: 
+  bloom:
+    EnabledEffect: 1
+    BloomSettings:
+      intensity: 0.1
+      threshold: 0.7
+      diffusion: 0.8
+      expose: 1
+  colorGrading:
+    EnabledEffect: 0
+    ColorGradingSettings:
+      lut: {fileID: 0}
+  fxaa:
+    EnabledEffect: 0
+  vignette:
+    EnabledEffect: 1
+    VignetteSettings:
+      color: {r: 0, g: 0, b: 0, a: 1}
+      innerRadius: 0.1
+      outerRadius: 2
+      intensity: 1.3

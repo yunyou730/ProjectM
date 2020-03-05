@@ -1,0 +1,171 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 005_aries_s_b
+  m_Shader: {fileID: 4800000, guid: 7eda3c88af1993d40ab069f97b3b3682, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - AOMap:
+        m_Texture: {fileID: 2800000, guid: 28eef97feec4dfe4193d6349d31e35a5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - BaseMap:
+        m_Texture: {fileID: 2800000, guid: 67e55d2439b686249a78607ffc342193, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - DiffuseBiasMap:
+        m_Texture: {fileID: 2800000, guid: 9e3ca65e4f93b23459cf6ed7c16cb50c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - DiffuseRampMap:
+        m_Texture: {fileID: 2800000, guid: ab3dcd539ffeb1649b76886690ff5e53, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - MaterialMap:
+        m_Texture: {fileID: 2800000, guid: e8f0253bfd063304cb2c091b8de7ce29, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0.1384678, y: 0.02349042}
+    - NormalMap:
+        m_Texture: {fileID: 2800000, guid: e362a2bd2d18fbd4f899e30f53e97cc7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - RimLightMask:
+        m_Texture: {fileID: 2800000, guid: 3cef3fd57eb8e8d46b519b1b75278e91, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - SpecularLayer1Mask:
+        m_Texture: {fileID: 2800000, guid: 54a7ee3aeb6a7fa45b582240d22cd477, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - SpecularLayer2Mask:
+        m_Texture: {fileID: 2800000, guid: bf81825e000193c4cbfe5046fbb76569, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - SpecularMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - SpecularRampMap:
+        m_Texture: {fileID: 2800000, guid: 14fe8adfb504b3d4cadc3e1ccb7aeabe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - AoBias: 0.7
+    - AoIntensity: 0.47
+    - CameraZOffset: 0
+    - DiffuseLayer1Intensity: 0.882
+    - DiffuseLayer1VerticalAxis: 0
+    - DiffuseLayer2Intensity: 0.836
+    - DiffuseLayer2VerticalAxis: 1
+    - DiffuseLayer3Intensity: 0.749
+    - DiffuseLayer3VerticalAxis: 0
+    - DiffuseLayer4Intensity: 0.532
+    - DiffuseLayer4VerticalAxis: 0.571
+    - DiffuseTintBaseIntensity: 0.191
+    - IndirectDiffuseIntensity: 0.081
+    - LightIntensity: 0.825
+    - MaxAOPower: 5
+    - MaxOutlineDistance: 5
+    - MinOutlineDistance: 0
+    - OutlineWidth: 0.002
+    - OutlineWidthMultiplier: 1
+    - RimLightArea: 0.8
+    - RimLightAreaMask: 0.15
+    - RimLightDirectionMask: 0.3
+    - RimLightIntensity: 0.7
+    - SpecularLayer1Fresnel: 0.12
+    - SpecularLayer1Intensity: 1.07
+    - SpecularLayer1Roughness: 0.81
+    - SpecularLayer1VerticalAxis: 1
+    - SpecularLayer2Fresnel: 0.42
+    - SpecularLayer2Intensity: 10
+    - SpecularLayer2Roughness: 1
+    - SpecularLayer2VerticalAxis: 0.42
+    - SpecularLayer3Fresnel: 0.3
+    - SpecularLayer3Intensity: 0
+    - SpecularLayer3Roughness: 0.33
+    - SpecularLayer3VerticalAxis: 0
+    - UseVertexOutlineColor: 0
+    - _BumpScale: 1
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _UVSec: 0
+    - _ZWrite: 1
+    m_Colors:
+    - DiffuseTintBaseColor: {r: 0.7490655, g: 0.8497199, b: 0.8773585, a: 1}
+    - DiffuseTintLayer1EndColor: {r: 0.7176471, g: 0.3647059, b: 0.28627452, a: 0}
+    - DiffuseTintLayer1StartColor: {r: 1, g: 0.91372555, b: 0.85098046, a: 1}
+    - DiffuseTintLayer2EndColor: {r: 0.63529414, g: 0.16078432, b: 0.16078432, a: 0}
+    - DiffuseTintLayer2StartColor: {r: 0.4901961, g: 0.49803925, b: 0.18431373, a: 1}
+    - DiffuseTintLayer3EndColor: {r: 0.8431373, g: 0.46274513, b: 0.38431376, a: 0}
+    - DiffuseTintLayer3StartColor: {r: 0.81568635, g: 0.6509804, b: 0.6039216, a: 1}
+    - DiffuseTintLayer4EndColor: {r: 0.45098042, g: 0.19607845, b: 0.15686275, a: 0}
+    - DiffuseTintLayer4StartColor: {r: 0.45098042, g: 0.19607845, b: 0.15686275, a: 1}
+    - OutlineColor: {r: 0.46226418, g: 0.16789782, b: 0.16789782, a: 1}
+    - RimLightColor: {r: 0.7735849, g: 0.6531684, b: 0.6531684, a: 1}
+    - SpecularLayer1Color: {r: 0.8113208, g: 0.34060165, b: 0.6177276, a: 1}
+    - SpecularLayer2Color: {r: 0.9575472, g: 0.99646455, b: 1, a: 1}
+    - SpecularLayer3Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

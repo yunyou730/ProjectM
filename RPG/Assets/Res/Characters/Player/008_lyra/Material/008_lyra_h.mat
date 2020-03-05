@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 008_lyra_h
+  m_Shader: {fileID: 4800000, guid: c5e6d88c2af40d84daec753542539e12, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2000
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - AOMap:
+        m_Texture: {fileID: 2800000, guid: b4720cd4af329cd4292d131e384cc04a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - BaseMap:
+        m_Texture: {fileID: 2800000, guid: 3f5145e7ecd3a914081479a35cb9f9a2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - DiffuseRampMap:
+        m_Texture: {fileID: 2800000, guid: ab3dcd539ffeb1649b76886690ff5e53, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - NormalMap:
+        m_Texture: {fileID: 2800000, guid: ae2d07dafef97a744831b0437cadad33, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - RimLightMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - SpecularJitterMap:
+        m_Texture: {fileID: 2800000, guid: ff78d35b11d68764f9368b28613bb186, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - SpecularRampMap:
+        m_Texture: {fileID: 2800000, guid: 14fe8adfb504b3d4cadc3e1ccb7aeabe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - AoBias: 0.4
+    - AoIntensity: 0
+    - CameraZOffset: 0
+    - DiffuseLayer1Intensity: 0.58
+    - DiffuseLayer1VerticalAxis: 1
+    - DiffuseLayer2Intensity: 0.78
+    - DiffuseLayer2VerticalAxis: 1
+    - DiffuseLayer3Intensity: 0.55
+    - DiffuseLayer3VerticalAxis: 1
+    - DiffuseLayer4Intensity: 0.55
+    - DiffuseLayer4VerticalAxis: 0.64
+    - DiffuseRampOffset: 0
+    - DiffuseTintBaseIntensity: 1
+    - IndirectDiffuseIntensity: 0
+    - LightIntensity: 0.95
+    - MaxAOPower: 5
+    - MaxOutlineDistance: 14.4
+    - MinOutlineDistance: 0.68
+    - OutlineWidth: 0.0031
+    - OutlineWidthMultiplier: 1.41
+    - RimLightArea: 0.36
+    - RimLightAreaMask: 0.01
+    - RimLightDirectionMask: 0
+    - RimLightIntensity: 0.35
+    - ShadowIntensity: 0.5
+    - SpecularLayer1Intensity: 0.44
+    - SpecularLayer1Roughness: 1
+    - SpecularLayer1Shift: -1
+    - SpecularLayer1VerticalAxis: 1
+    - SpecularLayer2Intensity: 0.38
+    - SpecularLayer2Roughness: 0.25
+    - SpecularLayer2Shift: -1
+    - SpecularLayer2VerticalAxis: 0.02
+    - SpecularLayer3Intensity: 0.46
+    - SpecularLayer3Roughness: 0.94
+    - SpecularLayer3Shift: -1
+    - SpecularLayer3VerticalAxis: 1
+    - UseVertexOutlineColor: 0
+    m_Colors:
+    - DiffuseTintBaseColor: {r: 0.31764707, g: 0.7058824, b: 0.69411767, a: 1}
+    - DiffuseTintLayer1EndColor: {r: 0.8196079, g: 0.6509804, b: 0.21568629, a: 1}
+    - DiffuseTintLayer1StartColor: {r: 0.64627093, g: 0.9716981, b: 0.65509546, a: 1}
+    - DiffuseTintLayer2EndColor: {r: 0.43137258, g: 0.26666668, b: 0.6784314, a: 1}
+    - DiffuseTintLayer2StartColor: {r: 1, g: 0.7058824, b: 0.9215687, a: 1}
+    - DiffuseTintLayer3EndColor: {r: 0.5529412, g: 0.13333334, b: 0.7803922, a: 1}
+    - DiffuseTintLayer3StartColor: {r: 0.81568635, g: 0.41960788, b: 0.76470596, a: 1}
+    - DiffuseTintLayer4EndColor: {r: 0.7803922, g: 0.50980395, b: 0.007843138, a: 1}
+    - DiffuseTintLayer4StartColor: {r: 0.79215693, g: 0.43529415, b: 0.121568635,
+        a: 1}
+    - OutlineColor: {r: 0.6415094, g: 0.40324312, b: 0.25720897, a: 1}
+    - RimLightColor: {r: 0.87843144, g: 0.59607846, b: 0.18039216, a: 1}
+    - ShadowColor: {r: 0.21271774, g: 0, b: 0.3301887, a: 1}
+    - SpecularLayer1Color: {r: 0.78431374, g: 0.55494744, b: 0.3607843, a: 1}
+    - SpecularLayer2Color: {r: 0.9333334, g: 0.85098046, b: 0.5568628, a: 1}
+    - SpecularLayer3Color: {r: 0.8, g: 0.66372377, b: 0.23137255, a: 1}

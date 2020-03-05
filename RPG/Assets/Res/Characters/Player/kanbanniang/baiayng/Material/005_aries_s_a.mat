@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 005_aries_s_a
+  m_Shader: {fileID: 4800000, guid: a793fcd12ae35804dad197407f4134f2, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3005
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - BaseMap:
+        m_Texture: {fileID: 2800000, guid: 61c25256e08878f46872b9c4b8679506, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - DiffuseRampMap:
+        m_Texture: {fileID: 2800000, guid: a1d92aacdb33bb44299fbda07a48da93, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - MaterialMap:
+        m_Texture: {fileID: 2800000, guid: 477e89789be11f64c8c34551cd0d1494, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - NormalMap:
+        m_Texture: {fileID: 2800000, guid: f66b2a5902ad480438c87fa92ca4a0da, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - BackFaceZWriteMode: 1
+    - CullMode: 2
+    - DiffuseLayer1Intensity: 0.526
+    - DiffuseLayer1VerticalAxis: 0.527
+    - DiffuseLayer2Intensity: 0.138
+    - DiffuseLayer2VerticalAxis: 0.557
+    - DstBlendMode: 10
+    - EmissiveIntensity: 0
+    - EnableEmissive: 0
+    - FrontFaceZWriteMode: 1
+    - SrcBlendMode: 5
+    - ZTestMode: 4
+    - ZWriteMode: 0
+    m_Colors:
+    - DiffuseTintLayer1EndColor: {r: 0.7924528, g: 0.1981132, b: 0.2039326, a: 0}
+    - DiffuseTintLayer1StartColor: {r: 1, g: 1, b: 1, a: 1}
+    - DiffuseTintLayer2EndColor: {r: 0.7465639, g: 0.41985583, b: 0.8018868, a: 0}
+    - DiffuseTintLayer2StartColor: {r: 0.9528302, g: 0.63372195, b: 0.63372195, a: 1}

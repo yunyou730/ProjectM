@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 005_aries_s_e
+  m_Shader: {fileID: 4800000, guid: a391531d381113a4a911bcf54ddc43b0, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - BaseMap:
+        m_Texture: {fileID: 2800000, guid: 0739b19aba9c95245bd5d0e4ce3d1eb2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - CausticMap:
+        m_Texture: {fileID: 2800000, guid: fb01d6b07272d5c4680570db4ac30b91, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - HeightMap:
+        m_Texture: {fileID: 2800000, guid: 6f16fd1587eeaf24f9e1199b4f7bc8b8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - HighlightMap:
+        m_Texture: {fileID: 2800000, guid: d8beda0a7c2272d45b2c41692120b0ad, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: -0.039790835, y: 0.02349042}
+    - IrisMap:
+        m_Texture: {fileID: 2800000, guid: 0dce94a6a208e6148a512e0414376823, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - MaterialMap:
+        m_Texture: {fileID: 2800000, guid: 950a6f224a9e8ae47a402646fb367c03, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: -0.05658484, y: 0.02349042}
+    - ShadowMap:
+        m_Texture: {fileID: 2800000, guid: de5dabc2c8fe05843ad925f684a1b008, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - CameraZOffset: 0
+    - CausticIntensity: 1.45
+    - HighlightIntensity: 1.99
+    - IrisFresnelOffset: -0.01
+    - IrisFresnelPower: 1.66
+    - IrisIntensity: 22.7
+    - IrisShadowMaskLevel: 0.02
+    - LightShadowIntensity: 0.078
+    - MaxOutlineDistance: 5
+    - MinOutlineDistance: 0
+    - OutlineWidth: 0
+    - OutlineWidthMultiplier: 1.09
+    - PupilParallaxHeight: 0.53
+    - PushParallaxLevel: 2.28
+    - UseVertexOutlineColor: 0
+    m_Colors:
+    - CausticColor: {r: 0.9339623, g: 0.9203709, b: 0.8062033, a: 1}
+    - HighlightColor: {r: 0.76557493, g: 0.8679245, b: 0.8679245, a: 1}
+    - IrisColor: {r: 0.8207547, g: 0.7289573, b: 0.43747774, a: 1}
+    - OutlineColor: {r: 0.46226418, g: 0.08067818, b: 0.08067818, a: 1}
+    - ShadowColor: {r: 0.49056602, g: 0.15503736, b: 0.4508037, a: 1}
