@@ -17,11 +17,10 @@ public class MenuHome : MonoBehaviour
     {
         
     }
-
-
+    
     public void OnClickLanGame()
     {
-
+        Debug.Log("lan game");
     }
 
     public void OnclickQuit()
