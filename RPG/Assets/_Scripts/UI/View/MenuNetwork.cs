@@ -4,7 +4,7 @@ using UnityEngine;
 using ayy;
 using UnityEngine.UI;
 
-public class MenuNetwork : MonoBehaviour
+public class MenuNetwork : MenuBase
 {
     public AyyNetwork _network = null;
     Text lockstepTurnIndexLabel = null;

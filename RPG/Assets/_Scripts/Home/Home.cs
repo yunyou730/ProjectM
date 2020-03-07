@@ -34,20 +34,8 @@ public class Home : MonoBehaviour
     
     void ShowMainMenu()
     {
-        CmdCenter.GetInstance().RunCmd(new CmdOpenMenu("Menu/MenuHome"));
+        Dictionary<string, object> arg = new Dictionary<string, object>();
+        arg.Add("menu_path", "Menu/MenuHome");
+        CmdCenter.GetInstance().RunCmd(new CmdOpenMenu(arg));
     }
-
-    /*
-    public void SwitchMenu(GameObject menuGo)
-    {
-        // remove attached children
-        for (int i = 0;i < menuRoot.transform.childCount; i++)
-        {
-            Transform oldMenu = menuRoot.transform.GetChild(i);
-            GameObject.Destroy(oldMenu.gameObject);
-        }
-        // attach new children
-        menuGo.transform.SetParent(menuRoot.transform);
-    }
-    */
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MenuHome : MonoBehaviour
+public class MenuHome : MenuBase
 {
     public GameObject lanGamePrefab = null;
 
@@ -21,17 +21,23 @@ public class MenuHome : MonoBehaviour
     public void OnClickLanGame()
     {
         CmdCenter.GetInstance().RunCmd(new CmdCloseMenu(gameObject));
-        CmdCenter.GetInstance().RunCmd(new CmdOpenMenu("Menu/MenuLanGame"));
-    }
 
-    public void OnclickQuit()
-    {
-        Application.Quit();
+        Dictionary<string, object> arg = new Dictionary<string, object>();
+        arg.Add("menu_path", "Menu/MenuLanGame");
+        CmdCenter.GetInstance().RunCmd(new CmdOpenMenu(arg));
     }
 
     public void OnClickOldNetwork()
     {
         CmdCenter.GetInstance().RunCmd(new CmdCloseMenu(gameObject));
-        CmdCenter.GetInstance().RunCmd(new CmdOpenMenu("Menu/MenuNetwork"));
+
+        Dictionary<string, object> arg = new Dictionary<string, object>();
+        arg.Add("menu_path", "Menu/MenuNetwork");
+        CmdCenter.GetInstance().RunCmd(new CmdOpenMenu(arg));
+    }
+
+    public void OnClickQuit()
+    {
+        Application.Quit();
     }
 }
