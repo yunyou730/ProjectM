@@ -16,8 +16,12 @@ public class AyyHostListener
 
     public void Start()
     {
-        udp = new UdpClient(new IPEndPoint(IPAddress.Any, port));
+        //udp = new UdpClient(new IPEndPoint(IPAddress.Any, port));
+        udp = new UdpClient(port);
+
         ipEndPoint = new IPEndPoint(IPAddress.Any, port);
+
+        //udp.JoinMulticastGroup(IPAddress.Broadcast);
 
 
         ThreadStart ts = new ThreadStart(RecvLoop);
