@@ -1,16 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ayy;
 
 public class MenuLanGame : MenuBase
 {
-    // Start is called before the first frame update
+    AyyHostListener hostListener = new AyyHostListener();
+
     void Start()
     {
-        // start listen host
+        hostListener.Start();
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         
@@ -19,6 +21,8 @@ public class MenuLanGame : MenuBase
     private void OnDestroy()
     {
         // close listen host
+        hostListener.Stop();
+        hostListener = null;
     }
 
     public void OnClickCreateGame()

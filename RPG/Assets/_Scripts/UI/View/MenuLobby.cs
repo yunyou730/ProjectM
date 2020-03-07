@@ -1,10 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ayy;
+
+public class ClientItem
+{
+    string ip;
+    string displayName;
+}
+
 
 public class MenuLobby : MenuBase
 {
     bool bSelfHost = false;
+    AyyHostBroadCaster broadCaster = null;
+
+    Dictionary<string, ClientItem> clients = new Dictionary<string, ClientItem>();
 
     private void Awake()
     {
@@ -15,6 +26,13 @@ public class MenuLobby : MenuBase
     {
         // enterArg has be set
         bSelfHost = enterArg.ContainsKey("self_host");
+
+        if (bSelfHost)
+        {
+            broadCaster = new AyyHostBroadCaster();
+            broadCaster.Prepare();
+            broadCaster.Start();
+        }
     }
 
     // Update is called once per frame
@@ -28,6 +46,12 @@ public class MenuLobby : MenuBase
     {
         // server close notify host, disconnect all network session
         // client disconnect network session
+
+        if (bSelfHost)
+        {
+            broadCaster.Stop();
+            broadCaster = null;
+        }
     }
 
     public void OnClickStart()

@@ -15,6 +15,11 @@ public class MenuBase : MonoBehaviour
     {
         
     }
+
+    private void OnDestroy()
+    {
+        
+    }
     /*
     public void SetEnterArg(Dictionary<string, object> enterArg)
     {
