@@ -20,11 +20,18 @@ public class MenuHome : MonoBehaviour
     
     public void OnClickLanGame()
     {
-        Debug.Log("lan game");
+        CmdCenter.GetInstance().RunCmd(new CmdCloseMenu(gameObject));
+        CmdCenter.GetInstance().RunCmd(new CmdOpenMenu("Menu/MenuLanGame"));
     }
 
     public void OnclickQuit()
     {
         Application.Quit();
+    }
+
+    public void OnClickOldNetwork()
+    {
+        CmdCenter.GetInstance().RunCmd(new CmdCloseMenu(gameObject));
+        CmdCenter.GetInstance().RunCmd(new CmdOpenMenu("Menu/MenuNetwork"));
     }
 }

@@ -4,10 +4,18 @@ using UnityEngine;
 
 public class Home : MonoBehaviour
 {
-    private GameObject menuRoot = null;
+    public static Home instance = null;
+
+    [HideInInspector]
+    public GameObject menuRoot { set; get; }
+
+    public static Home GetInstance() {
+        return instance;
+    }
     
     void Awake()
     {
+        instance = this;
         menuRoot = GameObject.Find("MenuRoot");
     }
     
@@ -23,36 +31,23 @@ public class Home : MonoBehaviour
         
     }
 
+    
     void ShowMainMenu()
     {
-        GameObject prefab = Resources.Load<GameObject>("Menu/MenuHome");
-        GameObject go = GameObject.Instantiate(prefab);
-        go.transform.SetParent(menuRoot.transform);
+        CmdCenter.GetInstance().RunCmd(new CmdOpenMenu("Menu/MenuHome"));
     }
 
-
-    void EnterLanGame()
+    /*
+    public void SwitchMenu(GameObject menuGo)
     {
-        ShowLanGameMenu();
-    }
-    
-    void ExitLanGame()
-    {
-        
-    }
-    
-    void ShowLanGameMenu()
-    {
-        // Show UI
-        GameObject prefab = Resources.Load<GameObject>("Menu/MenuNetwork");
-        GameObject go = GameObject.Instantiate(prefab);
-        go.transform.SetParent(menuRoot.transform);
-    }
-    
-    void SwitchMenu(GameObject menuGo)
-    {
-        
+        // remove attached children
+        for (int i = 0;i < menuRoot.transform.childCount; i++)
+        {
+            Transform oldMenu = menuRoot.transform.GetChild(i);
+            GameObject.Destroy(oldMenu.gameObject);
+        }
+        // attach new children
         menuGo.transform.SetParent(menuRoot.transform);
     }
-
+    */
 }
