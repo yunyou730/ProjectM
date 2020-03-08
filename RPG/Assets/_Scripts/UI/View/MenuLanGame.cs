@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ayy;
 using LitJson;
+using UnityEngine.UI;
 
 public class HostRecord
 {
@@ -80,7 +81,7 @@ public class MenuLanGame : MenuBase
 
     private void OnRecvData(string content)
     {
-        Debug.Log("[recv data] " + content);
+        //Debug.Log("[recv data] " + content);
 
         JsonData jd = JsonMapper.ToObject(content);
         string type = (string)jd["type"];
@@ -140,7 +141,7 @@ public class MenuLanGame : MenuBase
 
     private string BuildHostKey(string ip,int port)
     {
-        return ip + port;
+        return ip + "_" + port;
     }
 
 
@@ -149,7 +150,8 @@ public class MenuLanGame : MenuBase
         GameObject cell = GameObject.Instantiate(cellPrefab);
         cell.transform.SetParent(hostListView);
         cellDict.Add(key, cell);
-        RefreshCell(cell,record);
+        InitCell(cell,record);
+        RefreshCell(cell, record);
     }
 
     private void UpdateCell(string key,HostRecord record)
@@ -165,8 +167,25 @@ public class MenuLanGame : MenuBase
         Destroy(cell);
     }
 
+
+    private void InitCell(GameObject cell, HostRecord record)
+    {
+        Text endpointLabel = cell.transform.Find("Text_IP_Port").GetComponent<Text>();
+        Text displayLabel = cell.transform.Find("Text_Name").GetComponent<Text>(); ;
+        Button btnJoin = cell.transform.Find("Button_Join").GetComponent<Button>();
+
+        endpointLabel.text = record.ip + ":" + record.port;
+        displayLabel.text = "come on";
+        btnJoin.onClick.AddListener(() =>
+        {
+            Debug.Log("click: " + record.ip + ":" + record.port);
+        });
+    }
+
     private void RefreshCell(GameObject cell,HostRecord record)
     {
+        
+
 
     }
 }
