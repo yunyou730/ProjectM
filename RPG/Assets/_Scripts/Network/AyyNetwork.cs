@@ -60,7 +60,18 @@ namespace ayy
                 _server.Update(Time.deltaTime);
             }
         }
-
+        
+        private void OnDestroy()
+        {
+            if (_client != null)
+            {
+                _client.Close();
+            }
+            if (_server != null)
+            {
+                _server.Close();
+            }
+        }
 
         public void StartAsServer()
         {
@@ -77,12 +88,12 @@ namespace ayy
             }
         }
 
-        public void StartAsClient(string ip,int port)
+        public void StartAsClient(string ip,int port,AyyClient.DelegateConnectOK okCallback = null)
         {
             if (IsWorking) return;
 
             _client = new AyyClient(this);
-            _client.Start(ip, port);
+            _client.Start(ip, port, okCallback);
             IsServer = false;
             IsWorking = true;
         }

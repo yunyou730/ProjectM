@@ -32,19 +32,25 @@ namespace ayy
 
 
         UdpClient udp = null;
-        int port = 4321;
+        int port = 4321;        // broadcast port
         Thread broadcastThread = null;
 
         string content = "{\"empty\":true}";
         IPEndPoint endPoint;
 
         // @temp
-        int gamePort = 2333;
+        //int gamePort = 20086;   // @temp hard code 
         int playerNum = 0;
         int maxPlayerNum = 5;
+
+
+        ayy.AyyNetwork hostNetwork = null;
         
-        public void Prepare()
+        public void Prepare(ayy.AyyNetwork _hostNetwork)
         {
+            hostNetwork = _hostNetwork;
+            hostNetwork.StartAsServer();
+
             udp = new UdpClient();
             endPoint = new IPEndPoint(IPAddress.Parse("255.255.255.255"), port);
         }
@@ -70,6 +76,10 @@ namespace ayy
             udp.Close();
             udp.Dispose();
             udp = null;
+
+
+            // close network  
+            CmdCenter.GetInstance().RunCmd(new CmdCloseNetwork(null));
         }
 
 
@@ -111,7 +121,7 @@ namespace ayy
             AliveMessage msg = new AliveMessage();
             msg.type = "alive";
             msg.ip = GetIPAddress();
-            msg.port = gamePort;
+            msg.port = hostNetwork.serverPort;
             msg.playerNum = playerNum;
             msg.maxPlayerNum = maxPlayerNum;
             string strJson = JsonMapper.ToJson(msg);
@@ -123,7 +133,7 @@ namespace ayy
             CancelMessage msg = new CancelMessage();
             msg.type = "cancel";
             msg.ip = GetIPAddress();
-            msg.port = gamePort;
+            msg.port = hostNetwork.serverPort;
             string strJson = JsonMapper.ToJson(msg);
             return strJson;
         }

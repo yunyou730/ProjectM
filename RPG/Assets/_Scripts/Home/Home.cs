@@ -9,6 +9,9 @@ public class Home : MonoBehaviour
     [HideInInspector]
     public GameObject menuRoot { set; get; }
 
+    [HideInInspector]
+    public ayy.AyyNetwork network = null;
+
     public static Home GetInstance() {
         return instance;
     }
@@ -31,7 +34,6 @@ public class Home : MonoBehaviour
         
     }
 
-    
     void ShowMainMenu()
     {
         Dictionary<string, object> arg = new Dictionary<string, object>();

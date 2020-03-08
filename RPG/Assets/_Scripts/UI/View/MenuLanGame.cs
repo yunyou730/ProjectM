@@ -178,14 +178,30 @@ public class MenuLanGame : MenuBase
         displayLabel.text = "come on";
         btnJoin.onClick.AddListener(() =>
         {
-            Debug.Log("click: " + record.ip + ":" + record.port);
+            CmdNetworkConnectToServer cmd = new CmdNetworkConnectToServer(record);
+            cmd.SetOKCallback(() =>
+            {
+                OnConnectedToServer(record);
+            });
+            CmdCenter.GetInstance().RunCmd(cmd);
         });
     }
 
     private void RefreshCell(GameObject cell,HostRecord record)
     {
         
+    }
 
+    private void OnConnectedToServer(HostRecord hostRecord)
+    {
+        // enter lobby menu
+        Dictionary<string, object> arg = new Dictionary<string, object>();
+        Dictionary<string, object> enterArg = new Dictionary<string, object>();
+        arg.Add("menu_path", "Menu/MenuLobby");
+        arg.Add("enter_arg", enterArg);
+        CmdCenter.GetInstance().RunCmd(new CmdOpenMenu(arg));
 
+        // close current menu
+        CmdCenter.GetInstance().RunCmd(new CmdCloseMenu(gameObject));
     }
 }

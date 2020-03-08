@@ -100,7 +100,13 @@ namespace ayy
 
         public void Close()
         {
-
+            NetworkServer.UnregisterHandler(MsgType.Connect);
+            NetworkServer.UnregisterHandler(MsgType.Disconnect);
+            NetworkServer.UnregisterHandler(MsgType.Error);
+            NetworkServer.UnregisterHandler((short)CustomMsgType.Lobby_Player_Ready);
+            NetworkServer.UnregisterHandler((short)CustomMsgType.Game_Client_Ctrl);
+            NetworkServer.DisconnectAll();
+            NetworkServer.Reset();
         }
 
         public void Update(float deltaTime)

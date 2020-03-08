@@ -22,13 +22,18 @@ namespace ayy
         Dictionary<KeyCode, bool> careKeyMap = new Dictionary<KeyCode, bool>();
         Dictionary<KeyCode, bool> keyPressState = new Dictionary<KeyCode, bool>();
 
+        public delegate void DelegateConnectOK();
+        DelegateConnectOK connectOKCallback = null;
+
         public AyyClient(AyyNetwork context)
         {
             _context = context;
         }
 
-        public void Start(string serverIP,int serverPort)
+        public void Start(string serverIP,int serverPort, DelegateConnectOK connOKCallback = null)
         {
+            connectOKCallback = connOKCallback;
+
             _client = new NetworkClient();
             _client.RegisterHandler(MsgType.Connect, OnConnectedServer);
             _client.RegisterHandler(MsgType.Disconnect, OnDisConnectedServer);
@@ -54,7 +59,8 @@ namespace ayy
 
         public void Close()
         {
-
+            _client.Disconnect();
+            _client = null;
         }
 
         public void Update(float deltaTime)
@@ -127,6 +133,7 @@ namespace ayy
         {
             Debug.Log("OnConnctedServer.[server]" + netMsg.conn.address);
             _conn = netMsg.conn;
+            connectOKCallback?.Invoke();
         }
 
         private void OnDisConnectedServer(NetworkMessage netMsg)

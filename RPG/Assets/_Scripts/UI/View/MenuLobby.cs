@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ayy;
+using UnityEngine.UI;
 
 public class ClientItem
 {
@@ -17,9 +18,11 @@ public class MenuLobby : MenuBase
 
     Dictionary<string, ClientItem> clients = new Dictionary<string, ClientItem>();
 
+    Button btnStart = null;
+
     private void Awake()
     {
-        Debug.Log("awake..");    
+        btnStart = transform.Find("BtnStart").GetComponent<Button>();
     }
 
     void Start()
@@ -27,12 +30,19 @@ public class MenuLobby : MenuBase
         // enterArg has be set
         bSelfHost = enterArg.ContainsKey("self_host");
 
+        // start network
         if (bSelfHost)
         {
+            CmdCenter.GetInstance().RunCmd(new CmdInitNetwork(null));
+
+            // start broad cast
             broadCaster = new AyyHostBroadCaster();
-            broadCaster.Prepare();
+            broadCaster.Prepare(Home.GetInstance().network);
             broadCaster.Start();
         }
+
+        // toggle ui for host/client mode
+        btnStart.gameObject.SetActive(bSelfHost);
     }
 
     // Update is called once per frame
