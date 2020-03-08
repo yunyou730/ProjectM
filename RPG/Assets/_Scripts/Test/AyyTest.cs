@@ -15,6 +15,18 @@ public class AyyTest : MonoBehaviour
         Debug.Log(r);
         */
 
+        str2Json();
+        buildJsonObj();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        //
+    }
+
+    void str2Json()
+    {
         string jsonStr = @"{
             'name':'miao',
             'gender':'male',
@@ -29,8 +41,8 @@ public class AyyTest : MonoBehaviour
 
         JsonData jd = JsonMapper.ToObject(jsonStr);
         JsonData array = jd["array"];
-        
-        for (int i = 0;i < array.Count;i++)
+
+        for (int i = 0; i < array.Count; i++)
         {
             Debug.Log(array[i]);
         }
@@ -41,10 +53,11 @@ public class AyyTest : MonoBehaviour
         {
             Debug.Log(map[key]);
         }
-
+    }
+    
+    void buildJsonObj()
+    {
         JsonWriter jwriter = new JsonWriter();
-        
-
         jwriter.WriteObjectStart();
         {
 
@@ -79,11 +92,5 @@ public class AyyTest : MonoBehaviour
         //jd2.Add(3);
         //string strJson = jd2.ToString();
         Debug.Log(strJson);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //
     }
 }

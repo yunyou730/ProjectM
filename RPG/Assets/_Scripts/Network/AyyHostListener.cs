@@ -9,20 +9,24 @@ using System.Threading;
 
 public class AyyHostListener
 {
+    public class Message
+    {
+        public string content;
+    }
+
+
     UdpClient udp = null;
     Thread thread = null;
     int port = 4321;
     IPEndPoint ipEndPoint = null;
 
+    public delegate void RecvHostDelegate(string content);
+    public List<Message> messageList = new List<Message>();
+    
     public void Start()
     {
-        //udp = new UdpClient(new IPEndPoint(IPAddress.Any, port));
         udp = new UdpClient(port);
-
         ipEndPoint = new IPEndPoint(IPAddress.Any, port);
-
-        //udp.JoinMulticastGroup(IPAddress.Broadcast);
-
 
         ThreadStart ts = new ThreadStart(RecvLoop);
         thread = new Thread(ts);
@@ -35,6 +39,7 @@ public class AyyHostListener
         {
             thread.Abort();
         }
+
         udp.Close();
         udp.Dispose();
         udp = null;
@@ -42,14 +47,18 @@ public class AyyHostListener
 
     private void RecvLoop()
     {
-        try {
+        try
+        {
             while (true)
             {
-                if (udp != null)
+                byte[] bytes = udp.Receive(ref ipEndPoint);
+                string content = System.Text.Encoding.UTF8.GetString(bytes);
+
+                lock (messageList)
                 {
-                    byte[] bytes = udp.Receive(ref ipEndPoint);
-                    string str = System.Text.Encoding.UTF8.GetString(bytes);
-                    Debug.Log("[RecvLoop] " + str);
+                    Message msg = new Message();
+                    msg.content = content;
+                    messageList.Add(msg);
                 }
             }
         }
