@@ -25,12 +25,19 @@ public class AyyHostListener
     
     public void Start()
     {
-        udp = new UdpClient(port);
-        ipEndPoint = new IPEndPoint(IPAddress.Any, port);
+        try
+        {
+            udp = new UdpClient(port);
+            ipEndPoint = new IPEndPoint(IPAddress.Any, port);
 
-        ThreadStart ts = new ThreadStart(RecvLoop);
-        thread = new Thread(ts);
-        thread.Start();
+            ThreadStart ts = new ThreadStart(RecvLoop);
+            thread = new Thread(ts);
+            thread.Start();
+        }
+        catch (System.Exception ex)
+        {
+            Debug.Log("[AyyHostListener:Start()] ex:" + ex.ToString());
+        }
     }
 
     public void Stop()
@@ -39,10 +46,12 @@ public class AyyHostListener
         {
             thread.Abort();
         }
-
-        udp.Close();
-        udp.Dispose();
-        udp = null;
+        if (udp != null)
+        {
+            udp.Close();
+            udp.Dispose();
+            udp = null;
+        }
     }
 
     private void RecvLoop()

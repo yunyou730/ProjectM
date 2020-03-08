@@ -160,7 +160,9 @@ public class MenuLanGame : MenuBase
 
     private void RemoveCell(string key)
     {
+        GameObject cell = cellDict[key];
         cellDict.Remove(key);
+        Destroy(cell);
     }
 
     private void RefreshCell(GameObject cell,HostRecord record)
