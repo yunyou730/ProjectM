@@ -5,11 +5,6 @@ using LitJson;
 
 namespace ayy
 {
-    public class PrepareSendControl
-    { 
-        
-    }
-
     public class Gameplay : MonoBehaviour
     {
         private MapMonoBehaviour    map = null;
@@ -26,22 +21,6 @@ namespace ayy
 
         private void Awake()
         {
-            /*
-            if (map == null)
-            {
-                map = GameObject.Find("Map").GetComponent<MapMonoBehaviour>();
-            }
-            
-            if (network == null)
-            {
-                network = GameObject.Find("NetworkManager").GetComponent<AyyNetwork>();
-            }
-            
-            if (network == null)
-            {
-                network = GameObject.Find("gameplay_network").GetComponent<AyyNetwork>();
-            }            
-            */
             network = GetComponent<ayy.AyyNetwork>();
             map = GetComponent<ayy.MapMonoBehaviour>();
             

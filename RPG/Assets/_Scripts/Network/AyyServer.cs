@@ -172,8 +172,9 @@ namespace ayy
                 clientRecord.conn = netMsg.conn;
                 _clientMap.Add(netMsg.conn.connectionId, clientRecord);
                 Debug.Log("[OnClientJoinLobby] conn id:" + netMsg.conn.connectionId);
-                
+
                 BroadCastPlayerJoin(netMsg.conn.connectionId);
+                TellPlayerList(netMsg.conn.connectionId);
             }
             else
             {
@@ -184,6 +185,7 @@ namespace ayy
         private void OnClientLeave(int connectionId)
         {
             _clientMap.Remove(connectionId);
+            BroadCastPlayerLeft(connectionId);
         }
         
         // Lobby 阶段 ,广播 player 加入
@@ -209,17 +211,33 @@ namespace ayy
         }
 
         // Lobby 阶段,广播 player 离开
-        private void BroadCastPlayerLeft()
-        {
-            
-        }
-        
-        // Lobby 阶段,单独告诉某个 Player, 当前所有 Player 的状态  
-        private void TellPlayerState(int toConnId)
+        private void BroadCastPlayerLeft(int leftPlayerConnId)
         {
             LobbyMessage msg = new LobbyMessage();
             msg.messageId = ++_lobbyMsgCounter;
-            msg.msgType = "player_join";
+            msg.msgType = "player_left";
+
+            JsonWriter writer = new JsonWriter();
+            writer.WriteObjectStart();
+            writer.WritePropertyName("player_id");
+            writer.Write(leftPlayerConnId);
+            writer.WriteObjectEnd();
+
+            msg.content = writer.ToString();
+
+            foreach (int connId in _clientMap.Keys)
+            {
+                ClientRecord clientRecord = _clientMap[connId];
+                clientRecord.conn.Send((int)CustomMsgType.Lobby_Server_Player_Join, msg);
+            }
+        }
+        
+        // Lobby 阶段,单独告诉某个 Player, 当前所有 Player 的状态  
+        private void TellPlayerList(int toConnId)
+        {
+            LobbyMessage msg = new LobbyMessage();
+            msg.messageId = ++_lobbyMsgCounter;
+            msg.msgType = "player_list";
             
             JsonWriter writer = new JsonWriter();
             writer.WriteArrayStart();

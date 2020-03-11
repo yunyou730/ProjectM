@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using LitJson;
 
 namespace ayy
 {
@@ -22,7 +23,8 @@ namespace ayy
 
     public class AyyNetwork : MonoBehaviour
     {
-        public static float TURNS_PER_SECOND = 1.0f/30.0f;
+        public static float TURNS_PER_SECOND = 1.0f / 30.0f;
+        //public static float TURNS_PER_SECOND = 1.0f/30.0f;
         //public static float TURNS_PER_SECOND = 0.1f;
 
         public AyyServer _server = null;
@@ -37,8 +39,25 @@ namespace ayy
         public int serverPort { set; get; } = 20086;
 
 
-        float elapsedTime = 0;
+        // ------ lobby event ------
+        public delegate void LobbyPlayerListDelegate(List<int> playerIdArray);
+        public event LobbyPlayerListDelegate PlayerListEvent;
 
+        public delegate void LobbyPlayerJoinDelegate(int playerId);
+        public event LobbyPlayerJoinDelegate PlayerJoinEvent;
+
+        public delegate void LobbyPlayerLeftDelegate(int playerId);
+        public event LobbyPlayerLeftDelegate PlayerLeftEvent;
+
+        // ------ gameplay event ------
+        public delegate void GamePrepare();
+        public event GamePrepare GamePrepareEvent;
+
+        public delegate void GameStart();
+        public event GameStart GameStartEvent;
+
+        public delegate void GameTurn(int turnIndex, string json);
+        public event GameTurn GameTurnEvent;
 
         void Start()
         {
@@ -126,16 +145,7 @@ namespace ayy
             _client.ClientKeyRelease(keyCode);
         }
 
-        // ---------- Gameplay Code -------------- 
-        public delegate void GamePrepare();
-        public event GamePrepare GamePrepareEvent;
-
-        public delegate void GameStart();
-        public event GameStart GameStartEvent;
-
-        public delegate void GameTurn(int turnIndex,string json);
-        public event GameTurn GameTurnEvent;
-
+        // ---------- Lobby Code -------------- 
         public void HandleMessage(LobbyMessage msg)
         {
             Debug.Log("[HandleMessage(LobbyMessage)] " + msg.msgType);
@@ -145,27 +155,53 @@ namespace ayy
                     GamePrepareEvent?.Invoke();
                     break;
                 case "player_list":
-                    // @miao @todo
+                    {
+                        string strJson = msg.content;
+                        JsonData jd = JsonMapper.ToObject(strJson);
+                        List<int> playerIdArray = new List<int>();
+                        for (int i = 0;i < jd.Count;i++)
+                        {
+                            JsonData playerInfo = jd[i];
+                            int playerId = (int)playerInfo["player_id"];
+                            playerIdArray.Add(playerId);
+                        }
+                        PlayerListEvent?.Invoke(playerIdArray);
+                    }
                     break;
                 case "player_join":
-                    // @miao @todo
+                    {
+                        string strJson = msg.content;
+                        JsonData jd = JsonMapper.ToObject(strJson);
+                        int playerId = (int)jd["player_id"];
+                        PlayerJoinEvent?.Invoke(playerId);
+                    }
                     break;
                 case "player_left":
-                    // @miao @todo
+                    {
+                        string strJson = msg.content;
+                        JsonData jd = JsonMapper.ToObject(strJson);
+                        int playerId = (int)jd["player_id"];
+                        PlayerLeftEvent?.Invoke(playerId);
+                    }
                     break;
             }
         }
 
+        // ---------- Gameplay Code -------------- 
         public void HandleMessage(GameMessage msg)
         {
             //Debug.Log("[HandleMessage(GameMessage)] " + msg.msgType);
             switch (msg.msgType)
             {
-                case "start_game":
-                    GameStartEvent?.Invoke();
-                    break;
+                //case "start_game":
+                //    GameStartEvent?.Invoke();
+                //    break;
                 case "game_turn":
                     _client.turnIndex = msg.lockstepTurn;
+                    if (_client.turnIndex == 1)
+                    {
+                        GameStartEvent?.Invoke();
+                    }
                     GameTurnEvent?.Invoke(msg.lockstepTurn,msg.content);
                     break;
             }

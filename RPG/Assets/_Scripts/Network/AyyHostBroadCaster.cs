@@ -77,9 +77,6 @@ namespace ayy
             udp.Dispose();
             udp = null;
 
-
-            // close network  
-            CmdCenter.GetInstance().RunCmd(new CmdCloseNetwork(null));
         }
 
 
