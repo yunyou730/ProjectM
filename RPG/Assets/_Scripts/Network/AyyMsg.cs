@@ -10,7 +10,10 @@ namespace ayy
         Lobby_CreateRoom = 1234,
         Lobby_Server_Prepare,       // server 通知 client  开始加载游戏 
         Lobby_Player_Ready,         // client 通知 server  加载完毕，可以开始游戏
-
+        Lobby_Server_Player_Join,          // server 通知 client 加入了新的 player
+        Lobby_Server_Player_Left,        // Server 通知 client 有 player 离开了 
+        Lobby_Server_Player_List,        // Server 通知 client 所有在房间的 player 列表 
+        
         Game_Start,                 // server 通知 client  游戏正式开始，开启 LockStep 
 
         Game_LockStep_Turn,         // 服务器发送给 客户端 的 lockstep 轮次 数据  

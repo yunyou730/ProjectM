@@ -24,7 +24,7 @@ namespace ayy
 
         public delegate void DelegateConnectOK();
         DelegateConnectOK connectOKCallback = null;
-
+        
         public AyyClient(AyyNetwork context)
         {
             _context = context;
@@ -41,6 +41,10 @@ namespace ayy
 
             // lobby
             _client.RegisterHandler((int)CustomMsgType.Lobby_Server_Prepare, OnLobbyMsg);
+            _client.RegisterHandler((int)CustomMsgType.Lobby_Server_Player_List, OnLobbyMsg);
+            _client.RegisterHandler((int)CustomMsgType.Lobby_Server_Player_Join, OnLobbyMsg);
+            _client.RegisterHandler((int)CustomMsgType.Lobby_Server_Player_Left, OnLobbyMsg);
+            
             // gameplay
             _client.RegisterHandler((int)CustomMsgType.Game_LockStep_Turn, OnGameplayMsg);
             // do start 

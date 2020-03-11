@@ -13,8 +13,8 @@ public class CmdInitNetwork : BaseCommand
     {
         if (Home.GetInstance().network == null)
         {
-            GameObject network = new GameObject("gameplay_network");
-            network.AddComponent<ayy.AyyNetwork>();
+            GameObject prefab = Resources.Load<GameObject>("Gameplay/NetworkManager");
+            GameObject network = GameObject.Instantiate(prefab);
             Home.GetInstance().network = network.GetComponent<ayy.AyyNetwork>();
         }
     }

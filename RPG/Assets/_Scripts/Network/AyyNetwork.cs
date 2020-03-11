@@ -144,6 +144,15 @@ namespace ayy
                 case "game_prepare":
                     GamePrepareEvent?.Invoke();
                     break;
+                case "player_list":
+                    // @miao @todo
+                    break;
+                case "player_join":
+                    // @miao @todo
+                    break;
+                case "player_left":
+                    // @miao @todo
+                    break;
             }
         }
 

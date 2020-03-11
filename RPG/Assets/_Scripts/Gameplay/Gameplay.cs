@@ -12,24 +12,39 @@ namespace ayy
 
     public class Gameplay : MonoBehaviour
     {
-        MapMonoBehaviour    map = null;
-        AyyNetwork          network = null;
-
+        private MapMonoBehaviour    map = null;
+        private AyyNetwork          network = null;
+        
         public GameObject playerPrefab = null;
         public Vector3[] spawnPoints = null;
 
         Dictionary<int, Player> playerMap = new Dictionary<int, Player>();
-
-
+        
 
         Dictionary<int, Dictionary<KeyCode, bool>> clientKeyStateMap = new Dictionary<int, Dictionary<KeyCode, bool>>();
         //Dictionary<KeyCode, bool> careKeyMap = new Dictionary<KeyCode, bool>();
 
         private void Awake()
         {
-            map = GameObject.Find("Map").GetComponent<MapMonoBehaviour>();
-            network = GameObject.Find("NetworkManager").GetComponent<AyyNetwork>();
-
+            /*
+            if (map == null)
+            {
+                map = GameObject.Find("Map").GetComponent<MapMonoBehaviour>();
+            }
+            
+            if (network == null)
+            {
+                network = GameObject.Find("NetworkManager").GetComponent<AyyNetwork>();
+            }
+            
+            if (network == null)
+            {
+                network = GameObject.Find("gameplay_network").GetComponent<AyyNetwork>();
+            }            
+            */
+            network = GetComponent<ayy.AyyNetwork>();
+            map = GetComponent<ayy.MapMonoBehaviour>();
+            
             //careKeyMap.Add(KeyCode.W,true);
             //careKeyMap.Add(KeyCode.S, true);
             //careKeyMap.Add(KeyCode.A, true);

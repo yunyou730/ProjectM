@@ -15,7 +15,7 @@ namespace ayy
     public class LockStepTurn
     {
         public int turnIndex = 0;
-        public float period = 0;
+        public float period = 0;            // 记录 turn 总共经历的时间 
         public Dictionary<int, GameMessage> messageMap = new Dictionary<int, GameMessage>();
 
 
@@ -48,10 +48,6 @@ namespace ayy
         {
             period += deltaTime;
         }
-        //public bool CheckPeriod()
-        //{
-        //    return period >= shouldKeepPeriod;
-        //}
     }
 
     public class AyyServer
@@ -176,6 +172,8 @@ namespace ayy
                 clientRecord.conn = netMsg.conn;
                 _clientMap.Add(netMsg.conn.connectionId, clientRecord);
                 Debug.Log("[OnClientJoinLobby] conn id:" + netMsg.conn.connectionId);
+                
+                BroadCastPlayerJoin(netMsg.conn.connectionId);
             }
             else
             {
@@ -187,6 +185,61 @@ namespace ayy
         {
             _clientMap.Remove(connectionId);
         }
+        
+        // Lobby 阶段 ,广播 player 加入
+        private void BroadCastPlayerJoin(int joinPlayerConnId)
+        {
+            LobbyMessage msg = new LobbyMessage();
+            msg.messageId = ++_lobbyMsgCounter;
+            msg.msgType = "player_join";
+            
+            JsonWriter writer = new JsonWriter();
+            writer.WriteObjectStart();
+            writer.WritePropertyName("player_id");
+            writer.Write(joinPlayerConnId);
+            writer.WriteObjectEnd();
+            
+            msg.content = writer.ToString();
+            
+            foreach (int connId in _clientMap.Keys)
+            {
+                ClientRecord clientRecord = _clientMap[connId];
+                clientRecord.conn.Send((int)CustomMsgType.Lobby_Server_Player_Join, msg);
+            }
+        }
+
+        // Lobby 阶段,广播 player 离开
+        private void BroadCastPlayerLeft()
+        {
+            
+        }
+        
+        // Lobby 阶段,单独告诉某个 Player, 当前所有 Player 的状态  
+        private void TellPlayerState(int toConnId)
+        {
+            LobbyMessage msg = new LobbyMessage();
+            msg.messageId = ++_lobbyMsgCounter;
+            msg.msgType = "player_join";
+            
+            JsonWriter writer = new JsonWriter();
+            writer.WriteArrayStart();
+            foreach (int connId in _clientMap.Keys)
+            {
+                writer.WriteObjectStart();
+                writer.WritePropertyName("player_id");
+                writer.Write(connId);
+                writer.WriteObjectEnd();
+            }
+            writer.WriteArrayEnd();
+            
+            msg.content = writer.ToString();
+            
+            
+            ClientRecord clientRecord = _clientMap[toConnId];
+            clientRecord.conn.Send((int)CustomMsgType.Lobby_Server_Player_List, msg);
+            
+        }
+        
 
         private void OnPlayerReady(NetworkMessage netMsg)
         {
@@ -258,24 +311,7 @@ namespace ayy
                 spawnPointIndex++;
             }
         }
-
-        /*
-        private void FillEmptyMessageInNormalTurn()
-        {
-            foreach (int connId in _clientMap.Keys)
-            {
-                if (!_currentTurn.messageMap.ContainsKey(connId))
-                {
-                    GameMessage gameMsg = new GameMessage();
-                    gameMsg.lockstepTurn = _currentTurn.turnIndex;
-                    gameMsg.msgType = "game_client_empty";
-                    gameMsg.content = "game_client_empty";
-                    _currentTurn.AddMessage(connId, gameMsg);
-                }
-            }
-        }
-        */
-
+        
         private void BroadCastTurn()
         {
             // Build message content
