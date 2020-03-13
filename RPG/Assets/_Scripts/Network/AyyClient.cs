@@ -12,6 +12,8 @@ namespace ayy
 
         NetworkConnection _conn = null;
 
+        public int sessionId { set; get; } = -1;
+
         public int turnIndex { get; set; } = 0;
         public float turnStartTime = 0;
         public float timeCounter = 0;
@@ -24,6 +26,7 @@ namespace ayy
 
         public delegate void DelegateConnectOK();
         DelegateConnectOK connectOKCallback = null;
+        
         
         public AyyClient(AyyNetwork context)
         {

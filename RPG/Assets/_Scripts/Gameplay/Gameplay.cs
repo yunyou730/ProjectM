@@ -8,6 +8,8 @@ namespace ayy
 {
     public class Gameplay : MonoBehaviour
     {
+        public static Gameplay instance = null;
+        
         private AyyNetwork network = null;
 
         public GameObject playerPrefab = null;
@@ -22,8 +24,15 @@ namespace ayy
         GameObject root = null;
         ayy.MapMonoBehaviour map = null;
 
+        private Camera mainCamera = null;
+        
         private void Awake()
         {
+            if (instance == null)
+            {
+                instance = this;
+            }
+            
             network = GetComponent<ayy.AyyNetwork>();
             //map = GetComponent<ayy.MapMonoBehaviour>();
 
@@ -31,6 +40,8 @@ namespace ayy
             //careKeyMap.Add(KeyCode.S, true);
             //careKeyMap.Add(KeyCode.A, true);
             //careKeyMap.Add(KeyCode.D, true);
+
+            mainCamera = Camera.main;
 
             network.GamePrepareEvent += OnStartLoadGame;
             network.GameTurnEvent += OnGameTurnMessage;
@@ -49,6 +60,16 @@ namespace ayy
             {
                 player.Update(dt);
             }
+        }
+
+        public static Gameplay GetInstance()
+        {
+            return instance;
+        }
+
+        public int GetMySessionId()
+        {
+            return network._client.sessionId;
         }
 
         /*
@@ -122,9 +143,8 @@ namespace ayy
 
             map.CreateMap();
             yield return null;
-
+            
             OnLoadGameDone();
-
         }
 
         private void OnLoadGameDone()
@@ -184,12 +204,23 @@ namespace ayy
         
         private void OnPlayerSpawn(int clientId,int spawnPosIndex)
         {
+            // Create player
             Vector3 pos = spawnPoints[spawnPosIndex];
             GameObject go = GameObject.Instantiate(playerPrefab, pos, Quaternion.identity);
             Player player = new Player(go);
             playerMap.Add(clientId, player);
-
             go.transform.SetParent(root.transform);
+            
+            // Init camera
+            if (clientId == GetMySessionId())
+            {
+                InitCamera();
+            }
+        }
+
+        private void InitCamera()
+        {
+            
         }
     }
 }

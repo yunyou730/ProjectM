@@ -164,6 +164,12 @@ namespace ayy
                             JsonData playerInfo = jd[i];
                             int playerId = (int)playerInfo["player_id"];
                             playerIdArray.Add(playerId);
+                            
+                            // mark connection id
+                            if (playerInfo.ContainsKey("yourself_conn_id"))
+                            {
+                                _client.sessionId = playerId;
+                            }
                         }
                         PlayerListEvent?.Invoke(playerIdArray);
                     }

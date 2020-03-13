@@ -246,6 +246,14 @@ namespace ayy
                 writer.WriteObjectStart();
                 writer.WritePropertyName("player_id");
                 writer.Write(connId);
+                
+                // tell which one is yourself
+                if (toConnId == connId)
+                {
+                    writer.WritePropertyName("yourself_conn_id");
+                    writer.Write(true);
+                }
+                
                 writer.WriteObjectEnd();
             }
             writer.WriteArrayEnd();
