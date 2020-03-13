@@ -179,5 +179,6 @@ public class MenuLobby : MenuBase
         }
         GameObject go = clientCellMap[clientItem.playerId];
         Destroy(go);
+        clientCellMap.Remove(clientItem.playerId);
     }
 }
