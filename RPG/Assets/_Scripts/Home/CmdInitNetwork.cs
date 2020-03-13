@@ -16,6 +16,7 @@ public class CmdInitNetwork : BaseCommand
             GameObject prefab = Resources.Load<GameObject>("Gameplay/NetworkManager");
             GameObject network = GameObject.Instantiate(prefab);
             Home.GetInstance().network = network.GetComponent<ayy.AyyNetwork>();
+            MonoBehaviour.DontDestroyOnLoad(network.gameObject);
         }
     }
 }

@@ -2,28 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 using LitJson;
+using UnityEngine.SceneManagement;
 
 namespace ayy
 {
     public class Gameplay : MonoBehaviour
     {
-        private MapMonoBehaviour    map = null;
-        private AyyNetwork          network = null;
-        
+        private AyyNetwork network = null;
+
         public GameObject playerPrefab = null;
         public Vector3[] spawnPoints = null;
 
         Dictionary<int, Player> playerMap = new Dictionary<int, Player>();
-        
+
 
         Dictionary<int, Dictionary<KeyCode, bool>> clientKeyStateMap = new Dictionary<int, Dictionary<KeyCode, bool>>();
         //Dictionary<KeyCode, bool> careKeyMap = new Dictionary<KeyCode, bool>();
 
+        GameObject root = null;
+        ayy.MapMonoBehaviour map = null;
+
         private void Awake()
         {
             network = GetComponent<ayy.AyyNetwork>();
-            map = GetComponent<ayy.MapMonoBehaviour>();
-            
+            //map = GetComponent<ayy.MapMonoBehaviour>();
+
             //careKeyMap.Add(KeyCode.W,true);
             //careKeyMap.Add(KeyCode.S, true);
             //careKeyMap.Add(KeyCode.A, true);
@@ -37,7 +40,7 @@ namespace ayy
         {
 
         }
-        
+
         void Update()
         {
             float dt = Time.deltaTime;
@@ -85,11 +88,51 @@ namespace ayy
             }
         }
         */
-        void OnStartLoadGame()
+
+        /*
+            开始加载游戏，并在游戏加载完毕后，通知服务器加载完毕 
+        */
+        private void OnStartLoadGame()
         {
+            SceneManager.LoadScene("Gameplay");
+            StartCoroutine(DoStartLoadGame());
+        }
+
+
+        private IEnumerator DoStartLoadGame()
+        {
+            // load scene
+            AsyncOperation opLoadGameScene = SceneManager.LoadSceneAsync("Gameplay");
+            while (!opLoadGameScene.isDone)
+            {
+                yield return null;
+            }
+
+            // Create Root
+            root = new GameObject();
+            root.name = "root";
+            yield return null;
+
+            // Create Map
+            GameObject mapPrefab = Resources.Load<GameObject>("Gameplay/MapHolder");
+            GameObject mapHolder = GameObject.Instantiate(mapPrefab);
+            map = mapHolder.GetComponent<ayy.MapMonoBehaviour>();
+            map.transform.SetParent(root.transform);
+            yield return null;
+
             map.CreateMap();
+            yield return null;
+
+            OnLoadGameDone();
+
+        }
+
+        private void OnLoadGameDone()
+        {
+            // Notify server load ready
             network.ClientReady();
         }
+
 
         void OnGameTurnMessage(int turnIndex,string turnJson)
         {
@@ -144,7 +187,9 @@ namespace ayy
             Vector3 pos = spawnPoints[spawnPosIndex];
             GameObject go = GameObject.Instantiate(playerPrefab, pos, Quaternion.identity);
             Player player = new Player(go);
-            playerMap.Add(clientId, player); 
+            playerMap.Add(clientId, player);
+
+            go.transform.SetParent(root.transform);
         }
     }
 }
