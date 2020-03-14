@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using LitJson;
@@ -35,13 +36,6 @@ namespace ayy
             }
             
             network = GetComponent<ayy.AyyNetwork>();
-            //map = GetComponent<ayy.MapMonoBehaviour>();
-
-            //careKeyMap.Add(KeyCode.W,true);
-            //careKeyMap.Add(KeyCode.S, true);
-            //careKeyMap.Add(KeyCode.A, true);
-            //careKeyMap.Add(KeyCode.D, true);
-
             network.GamePrepareEvent += OnStartLoadGame;
             network.GameTurnEvent += OnGameTurnMessage;
         }
@@ -70,45 +64,7 @@ namespace ayy
         {
             return network._client.sessionId;
         }
-
-        /*
-        void UpdateForSendCtrl()
-        {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                network.ClientCtrlMove(MoveDir.Up);
-                Debug.Log("up");
-            }
-            else if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                network.ClientCtrlMove(MoveDir.Down);
-                Debug.Log("down");
-            }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                network.ClientCtrlMove(MoveDir.Left);
-                Debug.Log("left");
-            }
-            else if (Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                network.ClientCtrlMove(MoveDir.Right);
-                Debug.Log("right");
-            }
-
-            foreach (KeyCode keyCode in careKeyMap.Keys)
-            {
-                if (Input.GetKeyDown(keyCode))
-                {
-                    network.ClientKeyPress(keyCode);
-                }
-                else if (Input.GetKeyUp(keyCode))
-                {
-                    network.ClientKeyRelease(keyCode);
-                }
-            }
-        }
-        */
-
+        
         /*
             开始加载游戏，并在游戏加载完毕后，通知服务器加载完毕 
         */
@@ -117,8 +73,7 @@ namespace ayy
             SceneManager.LoadScene("Gameplay");
             StartCoroutine(DoStartLoadGame());
         }
-
-
+        
         private IEnumerator DoStartLoadGame()
         {
             // load scene
@@ -151,6 +106,11 @@ namespace ayy
         private void OnLoadGameDone()
         {
             network.ClientReady();
+            
+            // debug menu
+            Dictionary<string, object> arg = new Dictionary<string, object>();
+            arg.Add("menu_path","Menu/MenuInGameDebug");
+            CmdCenter.GetInstance().RunCmd(new CmdOpenMenu(arg));
         }
 
 
@@ -176,28 +136,16 @@ namespace ayy
                     int spawnPointIndex = (int)jd["spawn_point"];
                     OnPlayerSpawn(clientId,spawnPointIndex);
                     break;
-                case "client_ctrl_move":
+                case "client_ctrl_keymask":
                     {
+                        int keyMask = Int32.Parse(msgContent);
+                        //Debug.Log("[send key mask] " + Convert.ToString(keyMask,2));
                         Player p = playerMap[clientId];
-                        p.HandleMoveControl(msgContent);
+                        p.input.UnMarshal(keyMask);
                     }
                     break;
                 case "game_client_empty":
                     //Debug.Log("client:" + clientId + " do nothing");
-                    break;
-                case "client_key_press":
-                    {
-                        Player p = playerMap[clientId];
-                        KeyCode keyCode = (KeyCode)int.Parse(msgContent);
-                        p.HandleKeyPress(keyCode);
-                    }
-                    break;
-                case "client_key_release":
-                    {
-                        Player p = playerMap[clientId];
-                        KeyCode keyCode = (KeyCode)int.Parse(msgContent);
-                        p.HandleKeyRelease(keyCode);
-                    }
                     break;
             }
         }

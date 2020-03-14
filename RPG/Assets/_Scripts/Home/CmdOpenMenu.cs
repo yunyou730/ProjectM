@@ -26,7 +26,7 @@ public class CmdOpenMenu : BaseCommand
         // set arg
         MenuBase menu = go.GetComponent<MenuBase>();
         menu.enterArg = enterArg;
-
+        
         // show menu
         go.transform.SetParent(Home.GetInstance().menuRoot.transform);
     }

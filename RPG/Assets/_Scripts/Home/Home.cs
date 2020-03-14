@@ -20,6 +20,7 @@ public class Home : MonoBehaviour
     {
         instance = this;
         menuRoot = GameObject.Find("MenuRoot");
+        DontDestroyOnLoad(menuRoot);
     }
     
 

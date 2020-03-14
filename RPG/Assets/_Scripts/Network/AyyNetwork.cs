@@ -10,17 +10,7 @@ namespace ayy
         Lobby,
         Playing,
     }
-
-    public enum MoveDir
-    {
-        Up,
-        Down,
-        Left,
-        Right,
-    }
-
-
-
+    
     public class AyyNetwork : MonoBehaviour
     {
         public static float TURNS_PER_SECOND = 1.0f / 30.0f;
@@ -34,11 +24,9 @@ namespace ayy
         public GameState gameState { set; get; } = GameState.Lobby;
 
         public bool IsWorking { set; get; } = false;
-
-        public string serverIP { set; get; } = "127.0.0.1";
+        
         public int serverPort { set; get; } = 20086;
-
-
+        
         // ------ lobby event ------
         public delegate void LobbyPlayerListDelegate(List<int> playerIdArray);
         public event LobbyPlayerListDelegate PlayerListEvent;
@@ -128,23 +116,7 @@ namespace ayy
         {
             _client.ClientReady();
         }
-
-        public void ClientCtrlMove(MoveDir moveDir)
-        {
-            _client.ClientCtrlMove(moveDir);
-        }
-
-
-        public void ClientKeyPress(KeyCode keyCode)
-        {
-            _client.ClientKeyPress(keyCode);
-        }
-
-        public void ClientKeyRelease(KeyCode keyCode)
-        {
-            _client.ClientKeyRelease(keyCode);
-        }
-
+        
         // ---------- Lobby Code -------------- 
         public void HandleMessage(LobbyMessage msg)
         {

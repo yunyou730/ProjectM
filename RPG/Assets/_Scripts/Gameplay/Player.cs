@@ -8,11 +8,12 @@ namespace ayy
     {
         int _connId = 0;
         GameObject _go = null;
-        Dictionary<KeyCode, bool> _keyStateMap = new Dictionary<KeyCode, bool>();
-
+        //Dictionary<KeyCode, bool> _keyStateMap = new Dictionary<KeyCode, bool>();
+        
         private static float moveSpeed = 10.0f;
-
-
+        
+        public PlayerInput input = new PlayerInput();
+        
         public Player(GameObject go)
         {
             _go = go;
@@ -27,29 +28,33 @@ namespace ayy
         {
             return _go;
         }
-
+        
         private void UpdateForCtrl(float deltaTime)
         {
             Vector3 offset = new Vector3();
-            if (IsKeyPressing(KeyCode.W))
+            if (input.IsKeyPressing(KeyCode.W))
             {
                 offset.z += Time.deltaTime * moveSpeed;
             }
-            if (IsKeyPressing(KeyCode.S))
+            if (input.IsKeyPressing(KeyCode.S))
             {
                 offset.z -= Time.deltaTime * moveSpeed;
             }
-            if (IsKeyPressing(KeyCode.A))
+            if (input.IsKeyPressing(KeyCode.A))
             {
                 offset.x -= Time.deltaTime * moveSpeed;
             }
-            if (IsKeyPressing(KeyCode.D))
+            if (input.IsKeyPressing(KeyCode.D))
             {
                 offset.x += Time.deltaTime * moveSpeed;
             }
-            _go.transform.Translate(offset);
+            if (offset.magnitude > 0)
+            {
+                _go.transform.Translate(offset);    
+            }
         }
-
+        
+        /*
         public void HandleMoveControl(string strDir)
         {
             switch (strDir)
@@ -68,7 +73,9 @@ namespace ayy
                     break;
             }
         }
-
+        */
+        
+        /*
         public void HandleKeyPress(KeyCode keyCode)
         {
             if (_keyStateMap.ContainsKey(keyCode))
@@ -101,6 +108,7 @@ namespace ayy
             }
             return _keyStateMap[keyCode];
         }
+        */
     }
 }
 

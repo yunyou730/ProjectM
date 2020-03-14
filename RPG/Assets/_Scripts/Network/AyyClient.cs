@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -19,14 +20,12 @@ namespace ayy
         public float timeCounter = 0;
 
         Dictionary<int, bool> handledTurnMap = new Dictionary<int, bool>();
-
-
-        Dictionary<KeyCode, bool> careKeyMap = new Dictionary<KeyCode, bool>();
-        Dictionary<KeyCode, bool> keyPressState = new Dictionary<KeyCode, bool>();
-
+        
         public delegate void DelegateConnectOK();
         DelegateConnectOK connectOKCallback = null;
         
+        
+        public PlayerInput   input = new PlayerInput();
         
         public AyyClient(AyyNetwork context)
         {
@@ -52,16 +51,6 @@ namespace ayy
             _client.RegisterHandler((int)CustomMsgType.Game_LockStep_Turn, OnGameplayMsg);
             // do start 
             _client.Connect(serverIP, serverPort);
-
-            // Key State
-            careKeyMap.Add(KeyCode.UpArrow, true);
-            careKeyMap.Add(KeyCode.DownArrow, true);
-            careKeyMap.Add(KeyCode.LeftArrow, true);
-            careKeyMap.Add(KeyCode.RightArrow, true);
-            foreach (KeyCode key in careKeyMap.Keys)
-            {
-                keyPressState[key] = false;
-            }
         }
 
         public void Close()
@@ -73,63 +62,25 @@ namespace ayy
         public void Update(float deltaTime)
         {
             timeCounter += deltaTime;
-            UpdateCollectCtrl();
-            if (timeCounter - turnStartTime >= AyyNetwork.TURNS_PER_SECOND)
+            if (_conn != null)
             {
-                OnLockStepTurn();
+                input.CollectSample();
+                if (timeCounter - turnStartTime >= AyyNetwork.TURNS_PER_SECOND)
+                {
+                    OnLockStepTurn();
+                }    
             }
         }
-
-
-        private void UpdateCollectCtrl()
-        {
-            foreach (KeyCode keyCode in careKeyMap.Keys)
-            {
-                if (Input.GetKeyDown(keyCode))
-                {
-                    keyPressState[keyCode] = true;
-                }
-                else if (Input.GetKeyUp(keyCode))
-                {
-                    keyPressState[keyCode] = false;
-                }
-            }
-        }
-
-
+        
         private void UpdateForSendCtrl()
         {
-            //Debug.Log("UpdateForSendCtrl **");
-            foreach (KeyCode key in careKeyMap.Keys)
-            {
-                if (keyPressState[key])
-                {
-                    MoveDir dir = MoveDir.Up;
-                    switch (key)
-                    {
-                        case KeyCode.UpArrow:
-                            dir = MoveDir.Up;
-                            break;
-                        case KeyCode.DownArrow:
-                            dir = MoveDir.Down;
-                            break;
-                        case KeyCode.LeftArrow:
-                            dir = MoveDir.Left;
-                            break;
-                        case KeyCode.RightArrow:
-                            dir = MoveDir.Right;
-                            break;
-                    }
-                    ClientCtrlMove(dir);
-                }
-            }
+            int keyMask = input.Marshal();
+            ClientCtrl(keyMask);
         }
 
         public void OnLockStepTurn()
         {
             UpdateForSendCtrl();
-
-            //Debug.Log("OnLockStepTurn **");
             if (!HasHandledTurn(turnIndex))
             {
                 ClientDoNothing();
@@ -160,64 +111,25 @@ namespace ayy
             msg.content = "client_ready";
             _conn.Send((int)CustomMsgType.Lobby_Player_Ready,msg);
         }
-
-        public void ClientCtrlMove(MoveDir moveDir)
+        
+        public void ClientCtrl(int keyMask)
         {
             if (HasHandledTurn(turnIndex))
             {
-                Debug.LogWarning("has handled turn:" + turnIndex);
+                //Debug.LogWarning("has handled turn:" + turnIndex);
                 return;
             }
             MarkTurnHandled(turnIndex);
-
+            
             GameMessage msg = new GameMessage();
-            msg.msgType = "client_ctrl_move";
-            string content = "";
-            switch (moveDir)
-            {
-                case MoveDir.Up:
-                    content = "up";
-                    break;
-                case MoveDir.Down:
-                    content = "down";
-                    break;
-                case MoveDir.Left:
-                    content = "left";
-                    break;
-                case MoveDir.Right:
-                    content = "right";
-                    break;
-            }
-            msg.content = content;
+            msg.msgType = "client_ctrl_keymask";
+            msg.content = keyMask.ToString();
+            
+            //Debug.Log("[send key mask] " + Convert.ToString(keyMask,2));
+            
             _conn.Send((int)CustomMsgType.Game_Client_Ctrl,msg);
-
         }
-
-        public void ClientKeyPress(KeyCode keyCode)
-        {
-            if (HasHandledTurn(turnIndex)) 
-                return;
-            MarkTurnHandled(turnIndex);
-
-            GameMessage msg = new GameMessage();
-            msg.msgType = "client_key_press";
-            msg.content = ((int)keyCode).ToString();
-            _conn.Send((int)CustomMsgType.Game_Client_Ctrl, msg);
-        }
-
-        public void ClientKeyRelease(KeyCode keyCode)
-        {
-            if (HasHandledTurn(turnIndex)) 
-                return;
-            MarkTurnHandled(turnIndex);
-
-            GameMessage msg = new GameMessage();
-            msg.msgType = "client_key_release";
-            msg.content = ((int)keyCode).ToString();
-            _conn.Send((int)CustomMsgType.Game_Client_Ctrl, msg);
-        }
-
-
+        
         public void ClientDoNothing()
         {
             if (_conn == null)
@@ -250,16 +162,15 @@ namespace ayy
             turnStartTime = timeCounter;
 
 
-            Debug.Log("OnGameplayMsg --- turnIndex:" + turnIndex);
+            //Debug.Log("OnGameplayMsg --- turnIndex:" + turnIndex);
 
             _context.HandleMessage(msg);
         }
 
         private void MarkTurnHandled(int theTurnIndex)
         {
-            Debug.Log("mark turn handled:" + theTurnIndex);
+            //Debug.Log("mark turn handled:" + theTurnIndex);
             handledTurnMap.Add(theTurnIndex, true);
-
             if (handledTurnMap.ContainsKey(theTurnIndex - 2))
             {
                 handledTurnMap.Remove(theTurnIndex - 2);
