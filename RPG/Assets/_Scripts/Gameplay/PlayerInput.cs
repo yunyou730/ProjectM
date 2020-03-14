@@ -116,6 +116,12 @@ namespace ayy
             }
         }
 
+
+        public bool CheckHasMoveCtrl()
+        {
+            return IsKeyPressing(KeyCode.W) || IsKeyPressing(KeyCode.A) || IsKeyPressing(KeyCode.S) || IsKeyPressing(KeyCode.D);
+        }
+
     }
 }
 

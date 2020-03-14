@@ -123,7 +123,6 @@ namespace ayy
                 string msgContent = (string)jd[strClientId]["msg_content"];
                 HandleGameplayMessage(clientId,msgType,msgContent);
             }
-            
             TickByNetwork(turnIndex);
         }
 
@@ -147,8 +146,6 @@ namespace ayy
             }
         }
         
-
-
         private void HandleGameplayMessage(int clientId,string msgType,string msgContent)
         {
             JsonData jd = null;

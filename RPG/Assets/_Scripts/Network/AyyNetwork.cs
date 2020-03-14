@@ -13,7 +13,7 @@ namespace ayy
     
     public class AyyNetwork : MonoBehaviour
     {
-        public static float TURNS_PER_SECOND = 1.0f / 10.0f;
+        public static float TURNS_PER_SECOND = 1.0f / 25.0f;
         //public static float TURNS_PER_SECOND = 1.0f/30.0f;
         //public static float TURNS_PER_SECOND = 0.1f;
 

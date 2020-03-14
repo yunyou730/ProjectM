@@ -9,11 +9,11 @@ namespace ayy
         int _connId = 0;
 
         GameObject _go = null;
-        //Dictionary<KeyCode, bool> _keyStateMap = new Dictionary<KeyCode, bool>();
 
         private static float moveSpeed = 10.0f;
 
         public PlayerInput input = new PlayerInput();
+        public CtrlCmdQueue cmdQueue = new CtrlCmdQueue();
 
         public Player(GameObject go)
         {
@@ -22,7 +22,7 @@ namespace ayy
 
         public void Update(float deltaTime)
         {
-            //UpdateForCtrl(deltaTime);
+            UpdateExecuteCmd(deltaTime);
         }
 
         public void TickByNetwork(float deltaTime)
@@ -34,57 +34,32 @@ namespace ayy
         {
             return _go;
         }
-        
-        private void UpdateForCtrl(float deltaTime)
+
+        private void UpdateExecuteCmd(float deltaTime)
         {
-            Vector3 offset = new Vector3();
-            if (input.IsKeyPressing(KeyCode.W))
+            CtrlCommand cmd = cmdQueue.Peak();
+            if (cmd != null)
             {
-                offset.z += deltaTime * moveSpeed;
-            }
-            if (input.IsKeyPressing(KeyCode.S))
-            {
-                offset.z -= deltaTime * moveSpeed;
-            }
-            if (input.IsKeyPressing(KeyCode.A))
-            {
-                offset.x -= deltaTime * moveSpeed;
-            }
-            if (input.IsKeyPressing(KeyCode.D))
-            {
-                offset.x += deltaTime * moveSpeed;
-            }
-            if (offset.magnitude > 0)
-            {
-                _go.transform.Translate(offset);    
+                if (!cmd.HasStart())
+                {
+                    cmd.Start(this);
+                }
+                cmd.Update(this, deltaTime);
+                if (cmd.IsDone())
+                {
+                    cmdQueue.OnCmdDone();
+                }
             }
         }
 
         private void TickForCtrl()
         {
-            Vector3 offset = new Vector3();
-            if (input.IsKeyPressing(KeyCode.W))
+            if (input.CheckHasMoveCtrl())
             {
-                offset.z += 1;
-            }
-            if (input.IsKeyPressing(KeyCode.S))
-            {
-                offset.z -= 1;
-            }
-            if (input.IsKeyPressing(KeyCode.A))
-            {
-                offset.x -= 1;
-            }
-            if (input.IsKeyPressing(KeyCode.D))
-            {
-                offset.x += 1;
-            }
-            if (offset.magnitude > 0)
-            {
-                _go.transform.Translate(offset);    
+                CtrlCommand ctrlCmd = new CtrlCommand(input);
+                cmdQueue.Push(ctrlCmd);
             }
         }
-
     }
 }
 
