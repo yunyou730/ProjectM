@@ -13,7 +13,7 @@ namespace ayy
     
     public class AyyNetwork : MonoBehaviour
     {
-        public static float TURNS_PER_SECOND = 1.0f / 30.0f;
+        public static float TURNS_PER_SECOND = 1.0f / 10.0f;
         //public static float TURNS_PER_SECOND = 1.0f/30.0f;
         //public static float TURNS_PER_SECOND = 0.1f;
 
@@ -168,12 +168,8 @@ namespace ayy
         // ---------- Gameplay Code -------------- 
         public void HandleMessage(GameMessage msg)
         {
-            //Debug.Log("[HandleMessage(GameMessage)] " + msg.msgType);
             switch (msg.msgType)
             {
-                //case "start_game":
-                //    GameStartEvent?.Invoke();
-                //    break;
                 case "game_turn":
                     _client.turnIndex = msg.lockstepTurn;
                     if (_client.turnIndex == 1)

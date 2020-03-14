@@ -7,13 +7,14 @@ namespace ayy
     public class Player
     {
         int _connId = 0;
+
         GameObject _go = null;
         //Dictionary<KeyCode, bool> _keyStateMap = new Dictionary<KeyCode, bool>();
-        
+
         private static float moveSpeed = 10.0f;
-        
+
         public PlayerInput input = new PlayerInput();
-        
+
         public Player(GameObject go)
         {
             _go = go;
@@ -21,7 +22,12 @@ namespace ayy
 
         public void Update(float deltaTime)
         {
-            UpdateForCtrl(deltaTime);
+            //UpdateForCtrl(deltaTime);
+        }
+
+        public void TickByNetwork(float deltaTime)
+        {
+            TickForCtrl();
         }
 
         public GameObject GetGameObject()
@@ -34,81 +40,51 @@ namespace ayy
             Vector3 offset = new Vector3();
             if (input.IsKeyPressing(KeyCode.W))
             {
-                offset.z += Time.deltaTime * moveSpeed;
+                offset.z += deltaTime * moveSpeed;
             }
             if (input.IsKeyPressing(KeyCode.S))
             {
-                offset.z -= Time.deltaTime * moveSpeed;
+                offset.z -= deltaTime * moveSpeed;
             }
             if (input.IsKeyPressing(KeyCode.A))
             {
-                offset.x -= Time.deltaTime * moveSpeed;
+                offset.x -= deltaTime * moveSpeed;
             }
             if (input.IsKeyPressing(KeyCode.D))
             {
-                offset.x += Time.deltaTime * moveSpeed;
+                offset.x += deltaTime * moveSpeed;
             }
             if (offset.magnitude > 0)
             {
                 _go.transform.Translate(offset);    
             }
         }
-        
-        /*
-        public void HandleMoveControl(string strDir)
+
+        private void TickForCtrl()
         {
-            switch (strDir)
+            Vector3 offset = new Vector3();
+            if (input.IsKeyPressing(KeyCode.W))
             {
-                case "up":
-                    _go.transform.Translate(new Vector3(0, 0, 1));
-                    break;
-                case "down":
-                    _go.transform.Translate(new Vector3(0, 0, -1));
-                    break;
-                case "left":
-                    _go.transform.Translate(new Vector3(-1, 0, 0));
-                    break;
-                case "right":
-                    _go.transform.Translate(new Vector3(1, 0, 0));
-                    break;
+                offset.z += 1;
             }
-        }
-        */
-        
-        /*
-        public void HandleKeyPress(KeyCode keyCode)
-        {
-            if (_keyStateMap.ContainsKey(keyCode))
+            if (input.IsKeyPressing(KeyCode.S))
             {
-                _keyStateMap[keyCode] = true;
+                offset.z -= 1;
             }
-            else
+            if (input.IsKeyPressing(KeyCode.A))
             {
-                _keyStateMap.Add(keyCode, true);
+                offset.x -= 1;
+            }
+            if (input.IsKeyPressing(KeyCode.D))
+            {
+                offset.x += 1;
+            }
+            if (offset.magnitude > 0)
+            {
+                _go.transform.Translate(offset);    
             }
         }
 
-        public void HandleKeyRelease(KeyCode keyCode)
-        {
-            if (_keyStateMap.ContainsKey(keyCode))
-            {
-                _keyStateMap[keyCode] = false;
-            }
-            else
-            {
-                _keyStateMap.Add(keyCode, false);
-            }
-        }
-
-        private bool IsKeyPressing(KeyCode keyCode)
-        {
-            if (!_keyStateMap.ContainsKey(keyCode))
-            {
-                return false;
-            }
-            return _keyStateMap[keyCode];
-        }
-        */
     }
 }
 

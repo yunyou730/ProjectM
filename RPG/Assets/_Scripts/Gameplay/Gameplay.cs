@@ -17,17 +17,17 @@ namespace ayy
         public Vector3[] spawnPoints = null;
 
         Dictionary<int, Player> playerMap = new Dictionary<int, Player>();
-
-
-        Dictionary<int, Dictionary<KeyCode, bool>> clientKeyStateMap = new Dictionary<int, Dictionary<KeyCode, bool>>();
-        //Dictionary<KeyCode, bool> careKeyMap = new Dictionary<KeyCode, bool>();
-
+        
         GameObject root = null;
         ayy.MapMonoBehaviour map = null;
 
         private GameObject mainCamera = null;
         private CameraController mainCameraCtrl = null;
         
+        // @miao @todo
+        //private float timeCounter = 0;
+        private float prevTurnTime = 0;
+
         private void Awake()
         {
             if (instance == null)
@@ -48,7 +48,6 @@ namespace ayy
         void Update()
         {
             float dt = Time.deltaTime;
-            //UpdateForSendCtrl();
             foreach (Player player in playerMap.Values)
             {
                 player.Update(dt);
@@ -124,7 +123,31 @@ namespace ayy
                 string msgContent = (string)jd[strClientId]["msg_content"];
                 HandleGameplayMessage(clientId,msgType,msgContent);
             }
+            
+            TickByNetwork(turnIndex);
         }
+
+
+        private void TickByNetwork(int turnIndex)
+        {
+            if (turnIndex == 1)
+            {
+                prevTurnTime = Time.timeSinceLevelLoad;
+                return;
+            }
+
+            float now = Time.timeSinceLevelLoad;
+            float deltaTime = now - prevTurnTime;
+            prevTurnTime = now;
+        
+            // do tick
+            foreach (Player player in playerMap.Values)
+            {
+                player.TickByNetwork(deltaTime);
+            }
+        }
+        
+
 
         private void HandleGameplayMessage(int clientId,string msgType,string msgContent)
         {
