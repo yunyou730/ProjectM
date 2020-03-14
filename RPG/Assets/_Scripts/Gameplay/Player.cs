@@ -23,6 +23,10 @@ namespace ayy
             UpdateForCtrl(deltaTime);
         }
 
+        public GameObject GetGameObject()
+        {
+            return _go;
+        }
 
         private void UpdateForCtrl(float deltaTime)
         {

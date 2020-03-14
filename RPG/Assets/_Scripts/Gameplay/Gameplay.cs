@@ -24,7 +24,8 @@ namespace ayy
         GameObject root = null;
         ayy.MapMonoBehaviour map = null;
 
-        private Camera mainCamera = null;
+        private GameObject mainCamera = null;
+        private CameraController mainCameraCtrl = null;
         
         private void Awake()
         {
@@ -40,8 +41,6 @@ namespace ayy
             //careKeyMap.Add(KeyCode.S, true);
             //careKeyMap.Add(KeyCode.A, true);
             //careKeyMap.Add(KeyCode.D, true);
-
-            mainCamera = Camera.main;
 
             network.GamePrepareEvent += OnStartLoadGame;
             network.GameTurnEvent += OnGameTurnMessage;
@@ -129,6 +128,8 @@ namespace ayy
                 yield return null;
             }
 
+            InitCamera();
+
             // Create Root
             root = new GameObject();
             root.name = "root";
@@ -149,7 +150,6 @@ namespace ayy
 
         private void OnLoadGameDone()
         {
-            // Notify server load ready
             network.ClientReady();
         }
 
@@ -214,13 +214,20 @@ namespace ayy
             // Init camera
             if (clientId == GetMySessionId())
             {
-                InitCamera();
+                AssignCameraToMyPlayer();
             }
         }
 
         private void InitCamera()
         {
-            
+            mainCamera = Camera.main.gameObject;
+            mainCameraCtrl = mainCamera.AddComponent<CameraController>();
+        }
+
+        private void AssignCameraToMyPlayer()
+        {
+            Player myPlayer = playerMap[GetMySessionId()];
+            mainCameraCtrl.SetFollowTarget(myPlayer.GetGameObject());
         }
     }
 }
