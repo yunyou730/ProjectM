@@ -25,7 +25,8 @@ namespace ayy
         DelegateConnectOK connectOKCallback = null;
         
         
-        public PlayerInput   input = new PlayerInput();
+        public PlayerInput   input = new PlayerInput(PlayerInput.Usage.Communication);
+        private List<int>    ctrlCodeList = new List<int>();
         
         public AyyClient(AyyNetwork context)
         {
@@ -65,28 +66,36 @@ namespace ayy
             if (_conn != null)
             {
                 input.CollectSample();
+                ctrlCodeList.Add(input.Marshal());
                 if (timeCounter - turnStartTime >= AyyNetwork.TURNS_PER_SECOND)
                 {
                     OnLockStepTurn();
-                }    
+                }
             }
         }
         
-        private void UpdateForSendCtrl()
-        {
-            int keyMask = input.Marshal();
-            ClientCtrl(keyMask);
-        }
-
         public void OnLockStepTurn()
         {
-            UpdateForSendCtrl();
-            if (!HasHandledTurn(turnIndex))
+            if(!HasHandledTurn(turnIndex))
             {
-                ClientDoNothing();
+                if (ctrlCodeList.Count > 0)
+                {
+                    // 把 所有 没有发出去的操作，合并成一个 keyMask 在一个 lockstep turn 里集中发出去
+                    int keyMask = 0;
+                    for (int i = 0;i < ctrlCodeList.Count;i++)
+                    {
+                        keyMask = keyMask | ctrlCodeList[i];
+                    }
+                    ClientCtrl(keyMask);
+                    ctrlCodeList.Clear();
+                }
+                else
+                {
+                    ClientDoNothing();
+                }
             }
         }
-
+        
         private void OnConnectedServer(NetworkMessage netMsg)
         {
             Debug.Log("OnConnctedServer.[server]" + netMsg.conn.address);
@@ -112,12 +121,12 @@ namespace ayy
             _conn.Send((int)CustomMsgType.Lobby_Player_Ready,msg);
         }
         
-        public void ClientCtrl(int keyMask)
+        public bool ClientCtrl(int keyMask)
         {
             if (HasHandledTurn(turnIndex))
             {
                 //Debug.LogWarning("has handled turn:" + turnIndex);
-                return;
+                return false;
             }
             MarkTurnHandled(turnIndex);
             
@@ -128,6 +137,7 @@ namespace ayy
             //Debug.Log("[send key mask] " + Convert.ToString(keyMask,2));
             
             _conn.Send((int)CustomMsgType.Game_Client_Ctrl,msg);
+            return true;
         }
         
         public void ClientDoNothing()

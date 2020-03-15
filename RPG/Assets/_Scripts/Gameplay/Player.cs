@@ -12,7 +12,7 @@ namespace ayy
 
         private static float moveSpeed = 10.0f;
 
-        public PlayerInput input = new PlayerInput();
+        public PlayerInput input = new PlayerInput(PlayerInput.Usage.LocalControl);
         public CtrlCmdQueue cmdQueue = new CtrlCmdQueue();
 
         public Player(GameObject go)

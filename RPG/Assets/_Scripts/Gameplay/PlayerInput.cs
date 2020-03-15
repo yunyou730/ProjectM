@@ -8,11 +8,22 @@ namespace ayy
 {
     public class PlayerInput 
     {
+        public enum Usage
+        {
+            LocalControl,
+            Communication,
+        }
+
+        public Usage usage { set; get; } = Usage.LocalControl;
+
+
         private Dictionary<KeyCode, bool> keyState = new Dictionary<KeyCode, bool>();
         private List<KeyCode> keySequence = new List<KeyCode>();
 
-        public PlayerInput()
+        public PlayerInput(Usage _usage)
         {
+            usage = _usage;
+
             keySequence.Add(KeyCode.W);
             keySequence.Add(KeyCode.A);
             keySequence.Add(KeyCode.S);
