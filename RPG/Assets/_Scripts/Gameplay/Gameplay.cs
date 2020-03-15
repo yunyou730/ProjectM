@@ -24,8 +24,6 @@ namespace ayy
         private GameObject mainCamera = null;
         private CameraController mainCameraCtrl = null;
         
-        // @miao @todo
-        //private float timeCounter = 0;
         private float prevTurnTime = 0;
 
         private void Awake()
@@ -109,6 +107,11 @@ namespace ayy
             // debug menu
             Dictionary<string, object> arg = new Dictionary<string, object>();
             arg.Add("menu_path","Menu/MenuInGameDebug");
+            CmdCenter.GetInstance().RunCmd(new CmdOpenMenu(arg));
+
+            // virtual pad
+            arg = new Dictionary<string, object>();
+            arg.Add("menu_path", "Menu/VirtualPad");
             CmdCenter.GetInstance().RunCmd(new CmdOpenMenu(arg));
         }
 
